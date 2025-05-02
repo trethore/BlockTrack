@@ -3,21 +3,29 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { PrismaModule } from './prisma/prisma.module';
-import { LeaderboardModule } from './leaderboard/leaderboard.module'; 
-import { GraphQLBigInt } from 'graphql-scalars';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { GraphQLBigInt, GraphQLDateTime } from 'graphql-scalars'; 
+import { UserModule } from './user/user.module'; 
+import { AuthModule } from './infrastructure/auth/auth.module'; 
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
     PrismaModule,
+    AuthModule, 
+    UserModule, 
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      sortSchema: true, 
-      playground: true, 
-      introspection: true, 
-      resolvers: { BigInt: GraphQLBigInt }, 
+      sortSchema: true,
+      playground: true,
+      introspection: true,
+      resolvers: { BigInt: GraphQLBigInt, DateTime: GraphQLDateTime }, 
     }),
-    LeaderboardModule, 
+    LeaderboardModule,
   ],
+  controllers: [AppController], 
+  providers: [AppService], 
 })
 export class AppModule {}

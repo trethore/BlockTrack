@@ -14,6 +14,10 @@ const path_1 = require("path");
 const prisma_module_1 = require("./prisma/prisma.module");
 const leaderboard_module_1 = require("./leaderboard/leaderboard.module");
 const graphql_scalars_1 = require("graphql-scalars");
+const user_module_1 = require("./user/user.module");
+const auth_module_1 = require("./infrastructure/auth/auth.module");
+const app_controller_1 = require("./app.controller");
+const app_service_1 = require("./app.service");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -21,16 +25,20 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             prisma_module_1.PrismaModule,
+            auth_module_1.AuthModule,
+            user_module_1.UserModule,
             graphql_1.GraphQLModule.forRoot({
                 driver: apollo_1.ApolloDriver,
                 autoSchemaFile: (0, path_1.join)(process.cwd(), 'src/schema.gql'),
                 sortSchema: true,
                 playground: true,
                 introspection: true,
-                resolvers: { BigInt: graphql_scalars_1.GraphQLBigInt },
+                resolvers: { BigInt: graphql_scalars_1.GraphQLBigInt, DateTime: graphql_scalars_1.GraphQLDateTime },
             }),
             leaderboard_module_1.LeaderboardModule,
         ],
+        controllers: [app_controller_1.AppController],
+        providers: [app_service_1.AppService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
