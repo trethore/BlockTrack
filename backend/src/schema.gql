@@ -2,19 +2,52 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""Authentication token payload"""
+type AuthPayload {
+  accessToken: String!
+}
+
 """
 The `BigInt` scalar type represents non-fractional signed whole numeric values.
 """
 scalar BigInt
 
+input CreateUserInput {
+  email: String!
+  password: String!
+  username: String!
+}
+
 """
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
 scalar DateTime
+
+input LoginInput {
+  emailOrUsername: String!
+  password: String!
+}
+
+type Mutation {
+  """Creates a new user account"""
+  createUser(createUserData: CreateUserInput!): UserEntity!
+
+  """Deletes the authenticated user profile"""
+  deleteUser(id: ID!): ID!
+
+  """Logs in a user and returns a JWT"""
+  login(loginData: LoginInput!): AuthPayload!
+
+  """Updates the authenticated user profile"""
+  updateUser(updateUserData: UpdateUserInput!): UserEntity!
+}
 
 type Query {
   """Returns all tokens ordered by rank (ascending)"""
   leaderboard: [TokenEntity!]!
+
+  """Gets the currently authenticated user"""
+  me: UserEntity!
 }
 
 """Represents a cryptocurrency token"""
@@ -36,4 +69,20 @@ type TokenEntity {
   symbol: String!
   totalSupply: BigInt
   volume24hUsd: Float
+}
+
+input UpdateUserInput {
+  email: String
+  id: ID!
+  password: String
+  username: String
+}
+
+"""Represents a user account"""
+type UserEntity {
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  updatedAt: DateTime!
+  username: String!
 }

@@ -1,6 +1,5 @@
 import { ObjectType, Field, Int, Float, ID } from '@nestjs/graphql';
-import { GraphQLBigInt } from 'graphql-scalars';
-
+import { GraphQLBigInt, GraphQLDateTime } from 'graphql-scalars';
 @ObjectType({ description: 'Represents a cryptocurrency token' })
 export class TokenEntity {
   @Field(() => ID)
@@ -51,7 +50,7 @@ export class TokenEntity {
   @Field(() => Float, { nullable: true })
   marketCapChange24h?: number | null;
 
-  @Field(() => Date, { nullable: true })
-  lastUpdated?: Date | null;
+  @Field(() => GraphQLDateTime, { nullable: true }) 
+  lastUpdated?: Date | null; 
 
 }

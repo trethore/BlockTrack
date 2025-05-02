@@ -15,7 +15,7 @@ const bcrypt = require("bcryptjs");
 const jwt_1 = require("@nestjs/jwt");
 let AuthService = class AuthService {
     jwtService;
-    saltRounds = 69;
+    saltRounds = 10;
     constructor(jwtService) {
         this.jwtService = jwtService;
     }

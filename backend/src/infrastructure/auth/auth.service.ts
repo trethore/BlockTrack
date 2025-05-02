@@ -6,7 +6,7 @@ import { User } from '../../../generated/prisma';
 
 @Injectable()
 export class AuthService implements IAuthService {
-  private readonly saltRounds = 69;
+  private readonly saltRounds = 10;
 
   constructor(private readonly jwtService: JwtService) {}
 

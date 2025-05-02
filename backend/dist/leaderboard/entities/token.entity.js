@@ -97,7 +97,7 @@ __decorate([
     __metadata("design:type", Object)
 ], TokenEntity.prototype, "marketCapChange24h", void 0);
 __decorate([
-    (0, graphql_1.Field)(() => Date, { nullable: true }),
+    (0, graphql_1.Field)(() => graphql_scalars_1.GraphQLDateTime, { nullable: true }),
     __metadata("design:type", Object)
 ], TokenEntity.prototype, "lastUpdated", void 0);
 exports.TokenEntity = TokenEntity = __decorate([
