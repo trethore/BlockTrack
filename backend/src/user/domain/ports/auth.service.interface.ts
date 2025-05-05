@@ -1,4 +1,4 @@
-import { User } from '../../../../generated/prisma'; 
+import { User } from '@generated/prisma';
 export interface IAuthService {
   hashPassword(password: string): Promise<string>;
   comparePasswords(password: string, hash: string): Promise<boolean>;

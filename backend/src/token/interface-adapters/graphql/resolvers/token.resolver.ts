@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql'; // Ajoutez Mutation
 import { UseGuards } from '@nestjs/common';
 import { TokenEntity } from '../entities/token.entity';
 import { GetAllTokensUseCase } from '../../../use-cases/get-all-tokens.use-case';
@@ -7,6 +7,9 @@ import { GetFavoriteTokensUseCase } from '../../../use-cases/get-favorite-tokens
 import { GetTokenInput } from '../dto/get-token.input';
 import { JwtAuthGuard } from '../../../../infrastructure/auth/jwt-auth.guard';
 import { CurrentUser } from '../../../../infrastructure/auth/current-user.decorator';
+import { AddFavoriteTokenUseCase } from '../../../use-cases/add-favorite-token.use-case';
+import { RemoveFavoriteTokenUseCase } from '../../../use-cases/remove-favorite-token.use-case';
+import { FavoriteTokenInput } from '../dto/favorite-token.input';
 
 @Resolver(() => TokenEntity)
 export class TokenResolver {
@@ -14,7 +17,9 @@ export class TokenResolver {
     private readonly getAllTokensUseCase: GetAllTokensUseCase,
     private readonly getTokenUseCase: GetTokenUseCase,
     private readonly getFavoriteTokensUseCase: GetFavoriteTokensUseCase,
-  ) {}
+    private readonly addFavoriteTokenUseCase: AddFavoriteTokenUseCase,
+    private readonly removeFavoriteTokenUseCase: RemoveFavoriteTokenUseCase,
+  ) { }
 
   @Query(() => [TokenEntity], {
     name: 'tokens',
@@ -42,5 +47,29 @@ export class TokenResolver {
     @CurrentUser() user: { id: string },
   ): Promise<TokenEntity[]> {
     return this.getFavoriteTokensUseCase.execute({ userId: user.id });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => TokenEntity, { description: 'Adds a token to the authenticated user\'s favorites' })
+  async addFavoriteToken(
+    @Args('input') input: FavoriteTokenInput,
+    @CurrentUser() user: { id: string },
+  ): Promise<TokenEntity> {
+    return this.addFavoriteTokenUseCase.execute({
+      userId: user.id,
+      tokenId: input.tokenId,
+    });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => TokenEntity, { description: 'Removes a token from the authenticated user\'s favorites' })
+  async removeFavoriteToken(
+    @Args('input') input: FavoriteTokenInput,
+    @CurrentUser() user: { id: string },
+  ): Promise<TokenEntity> {
+    return this.removeFavoriteTokenUseCase.execute({
+      userId: user.id,
+      tokenId: input.tokenId,
+    });
   }
 }

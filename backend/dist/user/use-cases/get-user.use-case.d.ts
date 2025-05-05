@@ -1,5 +1,5 @@
 import { IUserRepository } from '../domain/ports/user.repository.interface';
-import { User } from '../../../generated/prisma';
+import { User } from '@generated/prisma';
 interface GetUserQuery {
     userId: string;
 }

@@ -9,7 +9,7 @@ import { UpdateUserUseCase } from '../../use-cases/update-user.use-case';
 import { DeleteUserUseCase } from '../../use-cases/delete-user.use-case';
 import { JwtAuthGuard } from '../../../infrastructure/auth/jwt-auth.guard';
 import { CurrentUser } from '../../../infrastructure/auth/current-user.decorator';
-import { User } from '../../../../generated/prisma'; 
+import { User } from '@generated/prisma';
 
 @Resolver(() => UserEntity)
 export class UserResolver {
@@ -18,7 +18,7 @@ export class UserResolver {
     private readonly getUserUseCase: GetUserUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
-  ) {}
+  ) { }
 
   @Mutation(() => UserEntity, { description: 'Creates a new user account' })
   async createUser(
@@ -49,16 +49,16 @@ export class UserResolver {
     return updatedUser;
   }
 
-  @UseGuards(JwtAuthGuard) 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => ID, { description: 'Deletes the authenticated user profile' })
   async deleteUser(
-     @Args('id', { type: () => ID }) id: string, 
-     @CurrentUser() user: { id: string }, 
+    @Args('id', { type: () => ID }) id: string,
+    @CurrentUser() user: { id: string },
   ): Promise<string> {
     await this.deleteUserUseCase.execute({
       userIdToDelete: id,
       authenticatedUserId: user.id,
     });
-    return id; 
+    return id;
   }
 }

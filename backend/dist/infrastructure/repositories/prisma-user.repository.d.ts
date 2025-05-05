@@ -1,6 +1,6 @@
 import { IUserRepository } from '../../user/domain/ports/user.repository.interface';
 import { PrismaService } from '../../prisma/prisma.service';
-import { User } from '../../../generated/prisma';
+import { User } from '@generated/prisma';
 export declare class PrismaUserRepository implements IUserRepository {
     private readonly prisma;
     constructor(prisma: PrismaService);

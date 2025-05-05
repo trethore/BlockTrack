@@ -38,7 +38,9 @@ exports.UserModule = UserModule = __decorate([
             user_resolver_1.UserResolver,
             auth_resolver_1.AuthResolver,
         ],
-        exports: [],
+        exports: [
+            user_repository_interface_1.IUserRepository
+        ],
     })
 ], UserModule);
 //# sourceMappingURL=user.module.js.map

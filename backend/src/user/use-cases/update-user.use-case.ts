@@ -1,7 +1,7 @@
 import { Injectable, Inject, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
 import { IUserRepository } from '../domain/ports/user.repository.interface';
 import { IAuthService } from '../domain/ports/auth.service.interface';
-import { User } from '../../../generated/prisma';
+import { User } from '@generated/prisma';
 
 interface UpdateUserCommand {
   userIdToUpdate: string;
@@ -18,7 +18,7 @@ export class UpdateUserUseCase {
     private readonly userRepository: IUserRepository,
     @Inject(IAuthService)
     private readonly authService: IAuthService,
-  ) {}
+  ) { }
 
   async execute(command: UpdateUserCommand): Promise<User> {
     if (command.userIdToUpdate !== command.authenticatedUserId) {
@@ -41,11 +41,11 @@ export class UpdateUserUseCase {
     }
 
     if (command.username !== undefined && command.username !== existingUser.username) {
-        const usernameExists = await this.userRepository.findByUsername(command.username);
-        if (usernameExists) {
-            throw new ConflictException('Username already exists');
-        }
-        updateData.username = command.username;
+      const usernameExists = await this.userRepository.findByUsername(command.username);
+      if (usernameExists) {
+        throw new ConflictException('Username already exists');
+      }
+      updateData.username = command.username;
     }
 
     if (command.password !== undefined) {
@@ -53,7 +53,7 @@ export class UpdateUserUseCase {
     }
 
     if (Object.keys(updateData).length === 0) {
-        return existingUser;
+      return existingUser;
     }
 
     const updatedUser = await this.userRepository.update(

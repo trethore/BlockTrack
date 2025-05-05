@@ -1,4 +1,4 @@
-import { Token } from '../../../../generated/prisma';
+import { Token } from '@generated/prisma';
 
 export interface ITokenRepository {
   findAllOrderByRank(): Promise<Token[]>;

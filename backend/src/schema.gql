@@ -23,12 +23,24 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
+input FavoriteTokenInput {
+  tokenId: ID!
+}
+
+input GetTokenInput {
+  id: ID
+  symbol: String
+}
+
 input LoginInput {
   emailOrUsername: String!
   password: String!
 }
 
 type Mutation {
+  """Adds a token to the authenticated user's favorites"""
+  addFavoriteToken(input: FavoriteTokenInput!): TokenEntity!
+
   """Creates a new user account"""
   createUser(createUserData: CreateUserInput!): UserEntity!
 
@@ -38,16 +50,25 @@ type Mutation {
   """Logs in a user and returns a JWT"""
   login(loginData: LoginInput!): AuthPayload!
 
+  """Removes a token from the authenticated user's favorites"""
+  removeFavoriteToken(input: FavoriteTokenInput!): TokenEntity!
+
   """Updates the authenticated user profile"""
   updateUser(updateUserData: UpdateUserInput!): UserEntity!
 }
 
 type Query {
-  """Returns all tokens ordered by rank (ascending)"""
-  leaderboard: [TokenEntity!]!
-
   """Gets the currently authenticated user"""
   me: UserEntity!
+
+  """Returns the authenticated user's favorite tokens"""
+  myFavoriteTokens: [TokenEntity!]!
+
+  """Returns a single token by ID or symbol"""
+  token(input: GetTokenInput!): TokenEntity
+
+  """Returns all tokens ordered by rank (ascending)"""
+  tokens: [TokenEntity!]!
 }
 
 """Represents a cryptocurrency token"""

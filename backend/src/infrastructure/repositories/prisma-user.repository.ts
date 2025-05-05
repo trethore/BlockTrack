@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { IUserRepository } from '../../user/domain/ports/user.repository.interface';
 import { PrismaService } from '../../prisma/prisma.service';
-import { User } from '../../../generated/prisma';
+import { User } from '@generated/prisma';
 
 @Injectable()
 export class PrismaUserRepository implements IUserRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async findById(id: string): Promise<User | null> {
     return this.prisma.user.findUnique({ where: { id } });

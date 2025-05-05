@@ -2,13 +2,13 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { IAuthService } from '../../user/domain/ports/auth.service.interface';
-import { User } from '../../../generated/prisma';
+import { User } from '@generated/prisma';
 
 @Injectable()
 export class AuthService implements IAuthService {
   private readonly saltRounds = 10;
 
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(private readonly jwtService: JwtService) { }
 
   async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, this.saltRounds);

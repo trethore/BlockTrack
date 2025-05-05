@@ -28,6 +28,8 @@ import { AuthModule } from '../infrastructure/auth/auth.module';
     UserResolver,
     AuthResolver,
   ],
-  exports: [], 
+  exports: [
+    IUserRepository
+  ], 
 })
 export class UserModule {}

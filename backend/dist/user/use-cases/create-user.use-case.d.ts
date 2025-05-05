@@ -1,6 +1,6 @@
 import { IUserRepository } from '../domain/ports/user.repository.interface';
 import { IAuthService } from '../domain/ports/auth.service.interface';
-import { User } from '../../../generated/prisma';
+import { User } from '@generated/prisma';
 interface CreateUserCommand {
     email: string;
     username: string;

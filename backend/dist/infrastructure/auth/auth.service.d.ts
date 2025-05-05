@@ -1,6 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
 import { IAuthService } from '../../user/domain/ports/auth.service.interface';
-import { User } from '../../../generated/prisma';
+import { User } from '@generated/prisma';
 export declare class AuthService implements IAuthService {
     private readonly jwtService;
     private readonly saltRounds;

@@ -49,6 +49,12 @@ CREATE TABLE "DataPoint" (
     CONSTRAINT "DataPoint_tokenId_fkey" FOREIGN KEY ("tokenId") REFERENCES "Token" ("tokenId") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- CreateTable
+CREATE TABLE "TokenUpdateLog" (
+    "id" TEXT NOT NULL PRIMARY KEY DEFAULT 'SINGLETON',
+    "lastRefreshedAt" DATETIME
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Token_symbol_key" ON "Token"("symbol");
 

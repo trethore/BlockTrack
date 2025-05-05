@@ -24,6 +24,16 @@ let PrismaTokenRepository = class PrismaTokenRepository {
             },
         });
     }
+    async findById(id) {
+        return this.prisma.token.findUnique({
+            where: { id },
+        });
+    }
+    async findBySymbol(symbol) {
+        return this.prisma.token.findUnique({
+            where: { symbol },
+        });
+    }
 };
 exports.PrismaTokenRepository = PrismaTokenRepository;
 exports.PrismaTokenRepository = PrismaTokenRepository = __decorate([
