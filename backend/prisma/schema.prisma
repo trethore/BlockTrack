@@ -26,6 +26,7 @@ model Token {
   percentChange1y    Float?
   marketCapChange24h Float?
   lastUpdated        DateTime?
+  lastDataPointsUpdate DateTime?
 
   dataPoints         DataPoint[]
   favorites          Favorite[]
