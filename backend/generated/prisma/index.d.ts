@@ -1384,6 +1384,7 @@ export namespace Prisma {
     percentChange1y: number | null
     marketCapChange24h: number | null
     lastUpdated: Date | null
+    lastDataPointsUpdate: Date | null
   }
 
   export type TokenMaxAggregateOutputType = {
@@ -1404,6 +1405,7 @@ export namespace Prisma {
     percentChange1y: number | null
     marketCapChange24h: number | null
     lastUpdated: Date | null
+    lastDataPointsUpdate: Date | null
   }
 
   export type TokenCountAggregateOutputType = {
@@ -1424,6 +1426,7 @@ export namespace Prisma {
     percentChange1y: number
     marketCapChange24h: number
     lastUpdated: number
+    lastDataPointsUpdate: number
     _all: number
   }
 
@@ -1478,6 +1481,7 @@ export namespace Prisma {
     percentChange1y?: true
     marketCapChange24h?: true
     lastUpdated?: true
+    lastDataPointsUpdate?: true
   }
 
   export type TokenMaxAggregateInputType = {
@@ -1498,6 +1502,7 @@ export namespace Prisma {
     percentChange1y?: true
     marketCapChange24h?: true
     lastUpdated?: true
+    lastDataPointsUpdate?: true
   }
 
   export type TokenCountAggregateInputType = {
@@ -1518,6 +1523,7 @@ export namespace Prisma {
     percentChange1y?: true
     marketCapChange24h?: true
     lastUpdated?: true
+    lastDataPointsUpdate?: true
     _all?: true
   }
 
@@ -1625,6 +1631,7 @@ export namespace Prisma {
     percentChange1y: number | null
     marketCapChange24h: number | null
     lastUpdated: Date | null
+    lastDataPointsUpdate: Date | null
     _count: TokenCountAggregateOutputType | null
     _avg: TokenAvgAggregateOutputType | null
     _sum: TokenSumAggregateOutputType | null
@@ -1664,6 +1671,7 @@ export namespace Prisma {
     percentChange1y?: boolean
     marketCapChange24h?: boolean
     lastUpdated?: boolean
+    lastDataPointsUpdate?: boolean
     dataPoints?: boolean | Token$dataPointsArgs<ExtArgs>
     favorites?: boolean | Token$favoritesArgs<ExtArgs>
     _count?: boolean | TokenCountOutputTypeDefaultArgs<ExtArgs>
@@ -1687,6 +1695,7 @@ export namespace Prisma {
     percentChange1y?: boolean
     marketCapChange24h?: boolean
     lastUpdated?: boolean
+    lastDataPointsUpdate?: boolean
   }, ExtArgs["result"]["token"]>
 
   export type TokenSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1707,6 +1716,7 @@ export namespace Prisma {
     percentChange1y?: boolean
     marketCapChange24h?: boolean
     lastUpdated?: boolean
+    lastDataPointsUpdate?: boolean
   }, ExtArgs["result"]["token"]>
 
   export type TokenSelectScalar = {
@@ -1727,9 +1737,10 @@ export namespace Prisma {
     percentChange1y?: boolean
     marketCapChange24h?: boolean
     lastUpdated?: boolean
+    lastDataPointsUpdate?: boolean
   }
 
-  export type TokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "symbol" | "name" | "rank" | "priceUSD" | "marketCapUsd" | "volume24hUsd" | "circulatingSupply" | "totalSupply" | "maxSupply" | "percentChange1h" | "percentChange24h" | "percentChange7d" | "percentChange30d" | "percentChange1y" | "marketCapChange24h" | "lastUpdated", ExtArgs["result"]["token"]>
+  export type TokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "symbol" | "name" | "rank" | "priceUSD" | "marketCapUsd" | "volume24hUsd" | "circulatingSupply" | "totalSupply" | "maxSupply" | "percentChange1h" | "percentChange24h" | "percentChange7d" | "percentChange30d" | "percentChange1y" | "marketCapChange24h" | "lastUpdated" | "lastDataPointsUpdate", ExtArgs["result"]["token"]>
   export type TokenInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     dataPoints?: boolean | Token$dataPointsArgs<ExtArgs>
     favorites?: boolean | Token$favoritesArgs<ExtArgs>
@@ -1762,6 +1773,7 @@ export namespace Prisma {
       percentChange1y: number | null
       marketCapChange24h: number | null
       lastUpdated: Date | null
+      lastDataPointsUpdate: Date | null
     }, ExtArgs["result"]["token"]>
     composites: {}
   }
@@ -2204,6 +2216,7 @@ export namespace Prisma {
     readonly percentChange1y: FieldRef<"Token", 'Float'>
     readonly marketCapChange24h: FieldRef<"Token", 'Float'>
     readonly lastUpdated: FieldRef<"Token", 'DateTime'>
+    readonly lastDataPointsUpdate: FieldRef<"Token", 'DateTime'>
   }
     
 
@@ -6834,7 +6847,8 @@ export namespace Prisma {
     percentChange30d: 'percentChange30d',
     percentChange1y: 'percentChange1y',
     marketCapChange24h: 'marketCapChange24h',
-    lastUpdated: 'lastUpdated'
+    lastUpdated: 'lastUpdated',
+    lastDataPointsUpdate: 'lastDataPointsUpdate'
   };
 
   export type TokenScalarFieldEnum = (typeof TokenScalarFieldEnum)[keyof typeof TokenScalarFieldEnum]
@@ -6966,6 +6980,7 @@ export namespace Prisma {
     percentChange1y?: FloatNullableFilter<"Token"> | number | null
     marketCapChange24h?: FloatNullableFilter<"Token"> | number | null
     lastUpdated?: DateTimeNullableFilter<"Token"> | Date | string | null
+    lastDataPointsUpdate?: DateTimeNullableFilter<"Token"> | Date | string | null
     dataPoints?: DataPointListRelationFilter
     favorites?: FavoriteListRelationFilter
   }
@@ -6988,6 +7003,7 @@ export namespace Prisma {
     percentChange1y?: SortOrderInput | SortOrder
     marketCapChange24h?: SortOrderInput | SortOrder
     lastUpdated?: SortOrderInput | SortOrder
+    lastDataPointsUpdate?: SortOrderInput | SortOrder
     dataPoints?: DataPointOrderByRelationAggregateInput
     favorites?: FavoriteOrderByRelationAggregateInput
   }
@@ -7013,6 +7029,7 @@ export namespace Prisma {
     percentChange1y?: FloatNullableFilter<"Token"> | number | null
     marketCapChange24h?: FloatNullableFilter<"Token"> | number | null
     lastUpdated?: DateTimeNullableFilter<"Token"> | Date | string | null
+    lastDataPointsUpdate?: DateTimeNullableFilter<"Token"> | Date | string | null
     dataPoints?: DataPointListRelationFilter
     favorites?: FavoriteListRelationFilter
   }, "id" | "symbol">
@@ -7035,6 +7052,7 @@ export namespace Prisma {
     percentChange1y?: SortOrderInput | SortOrder
     marketCapChange24h?: SortOrderInput | SortOrder
     lastUpdated?: SortOrderInput | SortOrder
+    lastDataPointsUpdate?: SortOrderInput | SortOrder
     _count?: TokenCountOrderByAggregateInput
     _avg?: TokenAvgOrderByAggregateInput
     _max?: TokenMaxOrderByAggregateInput
@@ -7063,6 +7081,7 @@ export namespace Prisma {
     percentChange1y?: FloatNullableWithAggregatesFilter<"Token"> | number | null
     marketCapChange24h?: FloatNullableWithAggregatesFilter<"Token"> | number | null
     lastUpdated?: DateTimeNullableWithAggregatesFilter<"Token"> | Date | string | null
+    lastDataPointsUpdate?: DateTimeNullableWithAggregatesFilter<"Token"> | Date | string | null
   }
 
   export type UserWhereInput = {
@@ -7281,6 +7300,7 @@ export namespace Prisma {
     percentChange1y?: number | null
     marketCapChange24h?: number | null
     lastUpdated?: Date | string | null
+    lastDataPointsUpdate?: Date | string | null
     dataPoints?: DataPointCreateNestedManyWithoutTokenInput
     favorites?: FavoriteCreateNestedManyWithoutTokenInput
   }
@@ -7303,6 +7323,7 @@ export namespace Prisma {
     percentChange1y?: number | null
     marketCapChange24h?: number | null
     lastUpdated?: Date | string | null
+    lastDataPointsUpdate?: Date | string | null
     dataPoints?: DataPointUncheckedCreateNestedManyWithoutTokenInput
     favorites?: FavoriteUncheckedCreateNestedManyWithoutTokenInput
   }
@@ -7325,6 +7346,7 @@ export namespace Prisma {
     percentChange1y?: NullableFloatFieldUpdateOperationsInput | number | null
     marketCapChange24h?: NullableFloatFieldUpdateOperationsInput | number | null
     lastUpdated?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastDataPointsUpdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dataPoints?: DataPointUpdateManyWithoutTokenNestedInput
     favorites?: FavoriteUpdateManyWithoutTokenNestedInput
   }
@@ -7347,6 +7369,7 @@ export namespace Prisma {
     percentChange1y?: NullableFloatFieldUpdateOperationsInput | number | null
     marketCapChange24h?: NullableFloatFieldUpdateOperationsInput | number | null
     lastUpdated?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastDataPointsUpdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dataPoints?: DataPointUncheckedUpdateManyWithoutTokenNestedInput
     favorites?: FavoriteUncheckedUpdateManyWithoutTokenNestedInput
   }
@@ -7369,6 +7392,7 @@ export namespace Prisma {
     percentChange1y?: number | null
     marketCapChange24h?: number | null
     lastUpdated?: Date | string | null
+    lastDataPointsUpdate?: Date | string | null
   }
 
   export type TokenUpdateManyMutationInput = {
@@ -7389,6 +7413,7 @@ export namespace Prisma {
     percentChange1y?: NullableFloatFieldUpdateOperationsInput | number | null
     marketCapChange24h?: NullableFloatFieldUpdateOperationsInput | number | null
     lastUpdated?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastDataPointsUpdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TokenUncheckedUpdateManyInput = {
@@ -7409,6 +7434,7 @@ export namespace Prisma {
     percentChange1y?: NullableFloatFieldUpdateOperationsInput | number | null
     marketCapChange24h?: NullableFloatFieldUpdateOperationsInput | number | null
     lastUpdated?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastDataPointsUpdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserCreateInput = {
@@ -7714,6 +7740,7 @@ export namespace Prisma {
     percentChange1y?: SortOrder
     marketCapChange24h?: SortOrder
     lastUpdated?: SortOrder
+    lastDataPointsUpdate?: SortOrder
   }
 
   export type TokenAvgOrderByAggregateInput = {
@@ -7750,6 +7777,7 @@ export namespace Prisma {
     percentChange1y?: SortOrder
     marketCapChange24h?: SortOrder
     lastUpdated?: SortOrder
+    lastDataPointsUpdate?: SortOrder
   }
 
   export type TokenMinOrderByAggregateInput = {
@@ -7770,6 +7798,7 @@ export namespace Prisma {
     percentChange1y?: SortOrder
     marketCapChange24h?: SortOrder
     lastUpdated?: SortOrder
+    lastDataPointsUpdate?: SortOrder
   }
 
   export type TokenSumOrderByAggregateInput = {
@@ -8627,6 +8656,7 @@ export namespace Prisma {
     percentChange1y?: number | null
     marketCapChange24h?: number | null
     lastUpdated?: Date | string | null
+    lastDataPointsUpdate?: Date | string | null
     dataPoints?: DataPointCreateNestedManyWithoutTokenInput
   }
 
@@ -8648,6 +8678,7 @@ export namespace Prisma {
     percentChange1y?: number | null
     marketCapChange24h?: number | null
     lastUpdated?: Date | string | null
+    lastDataPointsUpdate?: Date | string | null
     dataPoints?: DataPointUncheckedCreateNestedManyWithoutTokenInput
   }
 
@@ -8714,6 +8745,7 @@ export namespace Prisma {
     percentChange1y?: NullableFloatFieldUpdateOperationsInput | number | null
     marketCapChange24h?: NullableFloatFieldUpdateOperationsInput | number | null
     lastUpdated?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastDataPointsUpdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dataPoints?: DataPointUpdateManyWithoutTokenNestedInput
   }
 
@@ -8735,6 +8767,7 @@ export namespace Prisma {
     percentChange1y?: NullableFloatFieldUpdateOperationsInput | number | null
     marketCapChange24h?: NullableFloatFieldUpdateOperationsInput | number | null
     lastUpdated?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastDataPointsUpdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dataPoints?: DataPointUncheckedUpdateManyWithoutTokenNestedInput
   }
 
@@ -8756,6 +8789,7 @@ export namespace Prisma {
     percentChange1y?: number | null
     marketCapChange24h?: number | null
     lastUpdated?: Date | string | null
+    lastDataPointsUpdate?: Date | string | null
     favorites?: FavoriteCreateNestedManyWithoutTokenInput
   }
 
@@ -8777,6 +8811,7 @@ export namespace Prisma {
     percentChange1y?: number | null
     marketCapChange24h?: number | null
     lastUpdated?: Date | string | null
+    lastDataPointsUpdate?: Date | string | null
     favorites?: FavoriteUncheckedCreateNestedManyWithoutTokenInput
   }
 
@@ -8814,6 +8849,7 @@ export namespace Prisma {
     percentChange1y?: NullableFloatFieldUpdateOperationsInput | number | null
     marketCapChange24h?: NullableFloatFieldUpdateOperationsInput | number | null
     lastUpdated?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastDataPointsUpdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     favorites?: FavoriteUpdateManyWithoutTokenNestedInput
   }
 
@@ -8835,6 +8871,7 @@ export namespace Prisma {
     percentChange1y?: NullableFloatFieldUpdateOperationsInput | number | null
     marketCapChange24h?: NullableFloatFieldUpdateOperationsInput | number | null
     lastUpdated?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastDataPointsUpdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     favorites?: FavoriteUncheckedUpdateManyWithoutTokenNestedInput
   }
 

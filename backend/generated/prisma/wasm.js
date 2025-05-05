@@ -134,7 +134,8 @@ exports.Prisma.TokenScalarFieldEnum = {
   percentChange30d: 'percentChange30d',
   percentChange1y: 'percentChange1y',
   marketCapChange24h: 'marketCapChange24h',
-  lastUpdated: 'lastUpdated'
+  lastUpdated: 'lastUpdated',
+  lastDataPointsUpdate: 'lastDataPointsUpdate'
 };
 
 exports.Prisma.UserScalarFieldEnum = {

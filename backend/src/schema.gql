@@ -75,6 +75,7 @@ type Query {
 type TokenEntity {
   circulatingSupply: BigInt
   id: ID!
+  lastDataPointsUpdate: DateTime
   lastUpdated: DateTime
   marketCapChange24h: Float
   marketCapUsd: Float

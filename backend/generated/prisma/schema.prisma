@@ -9,23 +9,24 @@ datasource db {
 }
 
 model Token {
-  id                 String    @id @default(uuid()) @map("tokenId")
-  symbol             String    @unique
-  name               String
-  rank               Int
-  priceUSD           Float
-  marketCapUsd       Float?
-  volume24hUsd       Float?
-  circulatingSupply  BigInt?
-  totalSupply        BigInt?
-  maxSupply          BigInt?
-  percentChange1h    Float?
-  percentChange24h   Float?
-  percentChange7d    Float?
-  percentChange30d   Float?
-  percentChange1y    Float?
-  marketCapChange24h Float?
-  lastUpdated        DateTime?
+  id                   String    @id @default(uuid()) @map("tokenId")
+  symbol               String    @unique
+  name                 String
+  rank                 Int
+  priceUSD             Float
+  marketCapUsd         Float?
+  volume24hUsd         Float?
+  circulatingSupply    BigInt?
+  totalSupply          BigInt?
+  maxSupply            BigInt?
+  percentChange1h      Float?
+  percentChange24h     Float?
+  percentChange7d      Float?
+  percentChange30d     Float?
+  percentChange1y      Float?
+  marketCapChange24h   Float?
+  lastUpdated          DateTime?
+  lastDataPointsUpdate DateTime?
 
   dataPoints DataPoint[]
   favorites  Favorite[]
