@@ -159,6 +159,11 @@ exports.Prisma.DataPointScalarFieldEnum = {
   frequency: 'frequency'
 };
 
+exports.Prisma.TokenUpdateLogScalarFieldEnum = {
+  id: 'id',
+  lastRefreshedAt: 'lastRefreshedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -179,7 +184,8 @@ exports.Prisma.ModelName = {
   Token: 'Token',
   User: 'User',
   Favorite: 'Favorite',
-  DataPoint: 'DataPoint'
+  DataPoint: 'DataPoint',
+  TokenUpdateLog: 'TokenUpdateLog'
 };
 
 /**

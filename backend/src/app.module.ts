@@ -3,7 +3,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { PrismaModule } from './prisma/prisma.module';
-import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { TokenModule } from './token/token.module';
 import { GraphQLBigInt, GraphQLDateTime } from 'graphql-scalars'; 
 import { UserModule } from './user/user.module'; 
 import { AuthModule } from './infrastructure/auth/auth.module'; 
@@ -15,6 +15,7 @@ import { AppService } from './app.service';
     PrismaModule,
     AuthModule, 
     UserModule, 
+    TokenModule, 
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
@@ -23,7 +24,6 @@ import { AppService } from './app.service';
       introspection: true,
       resolvers: { BigInt: GraphQLBigInt, DateTime: GraphQLDateTime }, 
     }),
-    LeaderboardModule,
   ],
   controllers: [AppController], 
   providers: [AppService], 

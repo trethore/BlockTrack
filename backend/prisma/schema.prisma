@@ -72,3 +72,8 @@ enum Frequency {
   MONTHLY
   YEARLY
 }
+
+model TokenUpdateLog {
+  id              String    @id @default("SINGLETON")
+  lastRefreshedAt DateTime?
+}

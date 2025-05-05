@@ -33,6 +33,11 @@ export type Favorite = $Result.DefaultSelection<Prisma.$FavoritePayload>
  * 
  */
 export type DataPoint = $Result.DefaultSelection<Prisma.$DataPointPayload>
+/**
+ * Model TokenUpdateLog
+ * 
+ */
+export type TokenUpdateLog = $Result.DefaultSelection<Prisma.$TokenUpdateLogPayload>
 
 /**
  * Enums
@@ -217,6 +222,16 @@ export class PrismaClient<
     * ```
     */
   get dataPoint(): Prisma.DataPointDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.tokenUpdateLog`: Exposes CRUD operations for the **TokenUpdateLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TokenUpdateLogs
+    * const tokenUpdateLogs = await prisma.tokenUpdateLog.findMany()
+    * ```
+    */
+  get tokenUpdateLog(): Prisma.TokenUpdateLogDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -660,7 +675,8 @@ export namespace Prisma {
     Token: 'Token',
     User: 'User',
     Favorite: 'Favorite',
-    DataPoint: 'DataPoint'
+    DataPoint: 'DataPoint',
+    TokenUpdateLog: 'TokenUpdateLog'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -679,7 +695,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "token" | "user" | "favorite" | "dataPoint"
+      modelProps: "token" | "user" | "favorite" | "dataPoint" | "tokenUpdateLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -979,6 +995,80 @@ export namespace Prisma {
           }
         }
       }
+      TokenUpdateLog: {
+        payload: Prisma.$TokenUpdateLogPayload<ExtArgs>
+        fields: Prisma.TokenUpdateLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TokenUpdateLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenUpdateLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TokenUpdateLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenUpdateLogPayload>
+          }
+          findFirst: {
+            args: Prisma.TokenUpdateLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenUpdateLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TokenUpdateLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenUpdateLogPayload>
+          }
+          findMany: {
+            args: Prisma.TokenUpdateLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenUpdateLogPayload>[]
+          }
+          create: {
+            args: Prisma.TokenUpdateLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenUpdateLogPayload>
+          }
+          createMany: {
+            args: Prisma.TokenUpdateLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TokenUpdateLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenUpdateLogPayload>[]
+          }
+          delete: {
+            args: Prisma.TokenUpdateLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenUpdateLogPayload>
+          }
+          update: {
+            args: Prisma.TokenUpdateLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenUpdateLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.TokenUpdateLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TokenUpdateLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TokenUpdateLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenUpdateLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.TokenUpdateLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenUpdateLogPayload>
+          }
+          aggregate: {
+            args: Prisma.TokenUpdateLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTokenUpdateLog>
+          }
+          groupBy: {
+            args: Prisma.TokenUpdateLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TokenUpdateLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TokenUpdateLogCountArgs<ExtArgs>
+            result: $Utils.Optional<TokenUpdateLogCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1067,6 +1157,7 @@ export namespace Prisma {
     user?: UserOmit
     favorite?: FavoriteOmit
     dataPoint?: DataPointOmit
+    tokenUpdateLog?: TokenUpdateLogOmit
   }
 
   /* Types for Logging */
@@ -5762,6 +5853,960 @@ export namespace Prisma {
 
 
   /**
+   * Model TokenUpdateLog
+   */
+
+  export type AggregateTokenUpdateLog = {
+    _count: TokenUpdateLogCountAggregateOutputType | null
+    _min: TokenUpdateLogMinAggregateOutputType | null
+    _max: TokenUpdateLogMaxAggregateOutputType | null
+  }
+
+  export type TokenUpdateLogMinAggregateOutputType = {
+    id: string | null
+    lastRefreshedAt: Date | null
+  }
+
+  export type TokenUpdateLogMaxAggregateOutputType = {
+    id: string | null
+    lastRefreshedAt: Date | null
+  }
+
+  export type TokenUpdateLogCountAggregateOutputType = {
+    id: number
+    lastRefreshedAt: number
+    _all: number
+  }
+
+
+  export type TokenUpdateLogMinAggregateInputType = {
+    id?: true
+    lastRefreshedAt?: true
+  }
+
+  export type TokenUpdateLogMaxAggregateInputType = {
+    id?: true
+    lastRefreshedAt?: true
+  }
+
+  export type TokenUpdateLogCountAggregateInputType = {
+    id?: true
+    lastRefreshedAt?: true
+    _all?: true
+  }
+
+  export type TokenUpdateLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TokenUpdateLog to aggregate.
+     */
+    where?: TokenUpdateLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenUpdateLogs to fetch.
+     */
+    orderBy?: TokenUpdateLogOrderByWithRelationInput | TokenUpdateLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TokenUpdateLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenUpdateLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenUpdateLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TokenUpdateLogs
+    **/
+    _count?: true | TokenUpdateLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TokenUpdateLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TokenUpdateLogMaxAggregateInputType
+  }
+
+  export type GetTokenUpdateLogAggregateType<T extends TokenUpdateLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateTokenUpdateLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTokenUpdateLog[P]>
+      : GetScalarType<T[P], AggregateTokenUpdateLog[P]>
+  }
+
+
+
+
+  export type TokenUpdateLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TokenUpdateLogWhereInput
+    orderBy?: TokenUpdateLogOrderByWithAggregationInput | TokenUpdateLogOrderByWithAggregationInput[]
+    by: TokenUpdateLogScalarFieldEnum[] | TokenUpdateLogScalarFieldEnum
+    having?: TokenUpdateLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TokenUpdateLogCountAggregateInputType | true
+    _min?: TokenUpdateLogMinAggregateInputType
+    _max?: TokenUpdateLogMaxAggregateInputType
+  }
+
+  export type TokenUpdateLogGroupByOutputType = {
+    id: string
+    lastRefreshedAt: Date | null
+    _count: TokenUpdateLogCountAggregateOutputType | null
+    _min: TokenUpdateLogMinAggregateOutputType | null
+    _max: TokenUpdateLogMaxAggregateOutputType | null
+  }
+
+  type GetTokenUpdateLogGroupByPayload<T extends TokenUpdateLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TokenUpdateLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TokenUpdateLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TokenUpdateLogGroupByOutputType[P]>
+            : GetScalarType<T[P], TokenUpdateLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TokenUpdateLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    lastRefreshedAt?: boolean
+  }, ExtArgs["result"]["tokenUpdateLog"]>
+
+  export type TokenUpdateLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    lastRefreshedAt?: boolean
+  }, ExtArgs["result"]["tokenUpdateLog"]>
+
+  export type TokenUpdateLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    lastRefreshedAt?: boolean
+  }, ExtArgs["result"]["tokenUpdateLog"]>
+
+  export type TokenUpdateLogSelectScalar = {
+    id?: boolean
+    lastRefreshedAt?: boolean
+  }
+
+  export type TokenUpdateLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "lastRefreshedAt", ExtArgs["result"]["tokenUpdateLog"]>
+
+  export type $TokenUpdateLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TokenUpdateLog"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      lastRefreshedAt: Date | null
+    }, ExtArgs["result"]["tokenUpdateLog"]>
+    composites: {}
+  }
+
+  type TokenUpdateLogGetPayload<S extends boolean | null | undefined | TokenUpdateLogDefaultArgs> = $Result.GetResult<Prisma.$TokenUpdateLogPayload, S>
+
+  type TokenUpdateLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TokenUpdateLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TokenUpdateLogCountAggregateInputType | true
+    }
+
+  export interface TokenUpdateLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TokenUpdateLog'], meta: { name: 'TokenUpdateLog' } }
+    /**
+     * Find zero or one TokenUpdateLog that matches the filter.
+     * @param {TokenUpdateLogFindUniqueArgs} args - Arguments to find a TokenUpdateLog
+     * @example
+     * // Get one TokenUpdateLog
+     * const tokenUpdateLog = await prisma.tokenUpdateLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TokenUpdateLogFindUniqueArgs>(args: SelectSubset<T, TokenUpdateLogFindUniqueArgs<ExtArgs>>): Prisma__TokenUpdateLogClient<$Result.GetResult<Prisma.$TokenUpdateLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TokenUpdateLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TokenUpdateLogFindUniqueOrThrowArgs} args - Arguments to find a TokenUpdateLog
+     * @example
+     * // Get one TokenUpdateLog
+     * const tokenUpdateLog = await prisma.tokenUpdateLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TokenUpdateLogFindUniqueOrThrowArgs>(args: SelectSubset<T, TokenUpdateLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TokenUpdateLogClient<$Result.GetResult<Prisma.$TokenUpdateLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TokenUpdateLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenUpdateLogFindFirstArgs} args - Arguments to find a TokenUpdateLog
+     * @example
+     * // Get one TokenUpdateLog
+     * const tokenUpdateLog = await prisma.tokenUpdateLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TokenUpdateLogFindFirstArgs>(args?: SelectSubset<T, TokenUpdateLogFindFirstArgs<ExtArgs>>): Prisma__TokenUpdateLogClient<$Result.GetResult<Prisma.$TokenUpdateLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TokenUpdateLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenUpdateLogFindFirstOrThrowArgs} args - Arguments to find a TokenUpdateLog
+     * @example
+     * // Get one TokenUpdateLog
+     * const tokenUpdateLog = await prisma.tokenUpdateLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TokenUpdateLogFindFirstOrThrowArgs>(args?: SelectSubset<T, TokenUpdateLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__TokenUpdateLogClient<$Result.GetResult<Prisma.$TokenUpdateLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TokenUpdateLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenUpdateLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TokenUpdateLogs
+     * const tokenUpdateLogs = await prisma.tokenUpdateLog.findMany()
+     * 
+     * // Get first 10 TokenUpdateLogs
+     * const tokenUpdateLogs = await prisma.tokenUpdateLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const tokenUpdateLogWithIdOnly = await prisma.tokenUpdateLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TokenUpdateLogFindManyArgs>(args?: SelectSubset<T, TokenUpdateLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TokenUpdateLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TokenUpdateLog.
+     * @param {TokenUpdateLogCreateArgs} args - Arguments to create a TokenUpdateLog.
+     * @example
+     * // Create one TokenUpdateLog
+     * const TokenUpdateLog = await prisma.tokenUpdateLog.create({
+     *   data: {
+     *     // ... data to create a TokenUpdateLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends TokenUpdateLogCreateArgs>(args: SelectSubset<T, TokenUpdateLogCreateArgs<ExtArgs>>): Prisma__TokenUpdateLogClient<$Result.GetResult<Prisma.$TokenUpdateLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TokenUpdateLogs.
+     * @param {TokenUpdateLogCreateManyArgs} args - Arguments to create many TokenUpdateLogs.
+     * @example
+     * // Create many TokenUpdateLogs
+     * const tokenUpdateLog = await prisma.tokenUpdateLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TokenUpdateLogCreateManyArgs>(args?: SelectSubset<T, TokenUpdateLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TokenUpdateLogs and returns the data saved in the database.
+     * @param {TokenUpdateLogCreateManyAndReturnArgs} args - Arguments to create many TokenUpdateLogs.
+     * @example
+     * // Create many TokenUpdateLogs
+     * const tokenUpdateLog = await prisma.tokenUpdateLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TokenUpdateLogs and only return the `id`
+     * const tokenUpdateLogWithIdOnly = await prisma.tokenUpdateLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TokenUpdateLogCreateManyAndReturnArgs>(args?: SelectSubset<T, TokenUpdateLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TokenUpdateLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TokenUpdateLog.
+     * @param {TokenUpdateLogDeleteArgs} args - Arguments to delete one TokenUpdateLog.
+     * @example
+     * // Delete one TokenUpdateLog
+     * const TokenUpdateLog = await prisma.tokenUpdateLog.delete({
+     *   where: {
+     *     // ... filter to delete one TokenUpdateLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TokenUpdateLogDeleteArgs>(args: SelectSubset<T, TokenUpdateLogDeleteArgs<ExtArgs>>): Prisma__TokenUpdateLogClient<$Result.GetResult<Prisma.$TokenUpdateLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TokenUpdateLog.
+     * @param {TokenUpdateLogUpdateArgs} args - Arguments to update one TokenUpdateLog.
+     * @example
+     * // Update one TokenUpdateLog
+     * const tokenUpdateLog = await prisma.tokenUpdateLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TokenUpdateLogUpdateArgs>(args: SelectSubset<T, TokenUpdateLogUpdateArgs<ExtArgs>>): Prisma__TokenUpdateLogClient<$Result.GetResult<Prisma.$TokenUpdateLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TokenUpdateLogs.
+     * @param {TokenUpdateLogDeleteManyArgs} args - Arguments to filter TokenUpdateLogs to delete.
+     * @example
+     * // Delete a few TokenUpdateLogs
+     * const { count } = await prisma.tokenUpdateLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TokenUpdateLogDeleteManyArgs>(args?: SelectSubset<T, TokenUpdateLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TokenUpdateLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenUpdateLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TokenUpdateLogs
+     * const tokenUpdateLog = await prisma.tokenUpdateLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TokenUpdateLogUpdateManyArgs>(args: SelectSubset<T, TokenUpdateLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TokenUpdateLogs and returns the data updated in the database.
+     * @param {TokenUpdateLogUpdateManyAndReturnArgs} args - Arguments to update many TokenUpdateLogs.
+     * @example
+     * // Update many TokenUpdateLogs
+     * const tokenUpdateLog = await prisma.tokenUpdateLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TokenUpdateLogs and only return the `id`
+     * const tokenUpdateLogWithIdOnly = await prisma.tokenUpdateLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TokenUpdateLogUpdateManyAndReturnArgs>(args: SelectSubset<T, TokenUpdateLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TokenUpdateLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TokenUpdateLog.
+     * @param {TokenUpdateLogUpsertArgs} args - Arguments to update or create a TokenUpdateLog.
+     * @example
+     * // Update or create a TokenUpdateLog
+     * const tokenUpdateLog = await prisma.tokenUpdateLog.upsert({
+     *   create: {
+     *     // ... data to create a TokenUpdateLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TokenUpdateLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TokenUpdateLogUpsertArgs>(args: SelectSubset<T, TokenUpdateLogUpsertArgs<ExtArgs>>): Prisma__TokenUpdateLogClient<$Result.GetResult<Prisma.$TokenUpdateLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TokenUpdateLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenUpdateLogCountArgs} args - Arguments to filter TokenUpdateLogs to count.
+     * @example
+     * // Count the number of TokenUpdateLogs
+     * const count = await prisma.tokenUpdateLog.count({
+     *   where: {
+     *     // ... the filter for the TokenUpdateLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends TokenUpdateLogCountArgs>(
+      args?: Subset<T, TokenUpdateLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TokenUpdateLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TokenUpdateLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenUpdateLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TokenUpdateLogAggregateArgs>(args: Subset<T, TokenUpdateLogAggregateArgs>): Prisma.PrismaPromise<GetTokenUpdateLogAggregateType<T>>
+
+    /**
+     * Group by TokenUpdateLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenUpdateLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TokenUpdateLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TokenUpdateLogGroupByArgs['orderBy'] }
+        : { orderBy?: TokenUpdateLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TokenUpdateLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTokenUpdateLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TokenUpdateLog model
+   */
+  readonly fields: TokenUpdateLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TokenUpdateLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TokenUpdateLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TokenUpdateLog model
+   */
+  interface TokenUpdateLogFieldRefs {
+    readonly id: FieldRef<"TokenUpdateLog", 'String'>
+    readonly lastRefreshedAt: FieldRef<"TokenUpdateLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TokenUpdateLog findUnique
+   */
+  export type TokenUpdateLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenUpdateLog
+     */
+    select?: TokenUpdateLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenUpdateLog
+     */
+    omit?: TokenUpdateLogOmit<ExtArgs> | null
+    /**
+     * Filter, which TokenUpdateLog to fetch.
+     */
+    where: TokenUpdateLogWhereUniqueInput
+  }
+
+  /**
+   * TokenUpdateLog findUniqueOrThrow
+   */
+  export type TokenUpdateLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenUpdateLog
+     */
+    select?: TokenUpdateLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenUpdateLog
+     */
+    omit?: TokenUpdateLogOmit<ExtArgs> | null
+    /**
+     * Filter, which TokenUpdateLog to fetch.
+     */
+    where: TokenUpdateLogWhereUniqueInput
+  }
+
+  /**
+   * TokenUpdateLog findFirst
+   */
+  export type TokenUpdateLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenUpdateLog
+     */
+    select?: TokenUpdateLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenUpdateLog
+     */
+    omit?: TokenUpdateLogOmit<ExtArgs> | null
+    /**
+     * Filter, which TokenUpdateLog to fetch.
+     */
+    where?: TokenUpdateLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenUpdateLogs to fetch.
+     */
+    orderBy?: TokenUpdateLogOrderByWithRelationInput | TokenUpdateLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TokenUpdateLogs.
+     */
+    cursor?: TokenUpdateLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenUpdateLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenUpdateLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TokenUpdateLogs.
+     */
+    distinct?: TokenUpdateLogScalarFieldEnum | TokenUpdateLogScalarFieldEnum[]
+  }
+
+  /**
+   * TokenUpdateLog findFirstOrThrow
+   */
+  export type TokenUpdateLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenUpdateLog
+     */
+    select?: TokenUpdateLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenUpdateLog
+     */
+    omit?: TokenUpdateLogOmit<ExtArgs> | null
+    /**
+     * Filter, which TokenUpdateLog to fetch.
+     */
+    where?: TokenUpdateLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenUpdateLogs to fetch.
+     */
+    orderBy?: TokenUpdateLogOrderByWithRelationInput | TokenUpdateLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TokenUpdateLogs.
+     */
+    cursor?: TokenUpdateLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenUpdateLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenUpdateLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TokenUpdateLogs.
+     */
+    distinct?: TokenUpdateLogScalarFieldEnum | TokenUpdateLogScalarFieldEnum[]
+  }
+
+  /**
+   * TokenUpdateLog findMany
+   */
+  export type TokenUpdateLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenUpdateLog
+     */
+    select?: TokenUpdateLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenUpdateLog
+     */
+    omit?: TokenUpdateLogOmit<ExtArgs> | null
+    /**
+     * Filter, which TokenUpdateLogs to fetch.
+     */
+    where?: TokenUpdateLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenUpdateLogs to fetch.
+     */
+    orderBy?: TokenUpdateLogOrderByWithRelationInput | TokenUpdateLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TokenUpdateLogs.
+     */
+    cursor?: TokenUpdateLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenUpdateLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenUpdateLogs.
+     */
+    skip?: number
+    distinct?: TokenUpdateLogScalarFieldEnum | TokenUpdateLogScalarFieldEnum[]
+  }
+
+  /**
+   * TokenUpdateLog create
+   */
+  export type TokenUpdateLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenUpdateLog
+     */
+    select?: TokenUpdateLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenUpdateLog
+     */
+    omit?: TokenUpdateLogOmit<ExtArgs> | null
+    /**
+     * The data needed to create a TokenUpdateLog.
+     */
+    data?: XOR<TokenUpdateLogCreateInput, TokenUpdateLogUncheckedCreateInput>
+  }
+
+  /**
+   * TokenUpdateLog createMany
+   */
+  export type TokenUpdateLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TokenUpdateLogs.
+     */
+    data: TokenUpdateLogCreateManyInput | TokenUpdateLogCreateManyInput[]
+  }
+
+  /**
+   * TokenUpdateLog createManyAndReturn
+   */
+  export type TokenUpdateLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenUpdateLog
+     */
+    select?: TokenUpdateLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenUpdateLog
+     */
+    omit?: TokenUpdateLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many TokenUpdateLogs.
+     */
+    data: TokenUpdateLogCreateManyInput | TokenUpdateLogCreateManyInput[]
+  }
+
+  /**
+   * TokenUpdateLog update
+   */
+  export type TokenUpdateLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenUpdateLog
+     */
+    select?: TokenUpdateLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenUpdateLog
+     */
+    omit?: TokenUpdateLogOmit<ExtArgs> | null
+    /**
+     * The data needed to update a TokenUpdateLog.
+     */
+    data: XOR<TokenUpdateLogUpdateInput, TokenUpdateLogUncheckedUpdateInput>
+    /**
+     * Choose, which TokenUpdateLog to update.
+     */
+    where: TokenUpdateLogWhereUniqueInput
+  }
+
+  /**
+   * TokenUpdateLog updateMany
+   */
+  export type TokenUpdateLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TokenUpdateLogs.
+     */
+    data: XOR<TokenUpdateLogUpdateManyMutationInput, TokenUpdateLogUncheckedUpdateManyInput>
+    /**
+     * Filter which TokenUpdateLogs to update
+     */
+    where?: TokenUpdateLogWhereInput
+    /**
+     * Limit how many TokenUpdateLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TokenUpdateLog updateManyAndReturn
+   */
+  export type TokenUpdateLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenUpdateLog
+     */
+    select?: TokenUpdateLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenUpdateLog
+     */
+    omit?: TokenUpdateLogOmit<ExtArgs> | null
+    /**
+     * The data used to update TokenUpdateLogs.
+     */
+    data: XOR<TokenUpdateLogUpdateManyMutationInput, TokenUpdateLogUncheckedUpdateManyInput>
+    /**
+     * Filter which TokenUpdateLogs to update
+     */
+    where?: TokenUpdateLogWhereInput
+    /**
+     * Limit how many TokenUpdateLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TokenUpdateLog upsert
+   */
+  export type TokenUpdateLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenUpdateLog
+     */
+    select?: TokenUpdateLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenUpdateLog
+     */
+    omit?: TokenUpdateLogOmit<ExtArgs> | null
+    /**
+     * The filter to search for the TokenUpdateLog to update in case it exists.
+     */
+    where: TokenUpdateLogWhereUniqueInput
+    /**
+     * In case the TokenUpdateLog found by the `where` argument doesn't exist, create a new TokenUpdateLog with this data.
+     */
+    create: XOR<TokenUpdateLogCreateInput, TokenUpdateLogUncheckedCreateInput>
+    /**
+     * In case the TokenUpdateLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TokenUpdateLogUpdateInput, TokenUpdateLogUncheckedUpdateInput>
+  }
+
+  /**
+   * TokenUpdateLog delete
+   */
+  export type TokenUpdateLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenUpdateLog
+     */
+    select?: TokenUpdateLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenUpdateLog
+     */
+    omit?: TokenUpdateLogOmit<ExtArgs> | null
+    /**
+     * Filter which TokenUpdateLog to delete.
+     */
+    where: TokenUpdateLogWhereUniqueInput
+  }
+
+  /**
+   * TokenUpdateLog deleteMany
+   */
+  export type TokenUpdateLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TokenUpdateLogs to delete
+     */
+    where?: TokenUpdateLogWhereInput
+    /**
+     * Limit how many TokenUpdateLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TokenUpdateLog without action
+   */
+  export type TokenUpdateLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenUpdateLog
+     */
+    select?: TokenUpdateLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenUpdateLog
+     */
+    omit?: TokenUpdateLogOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -5824,6 +6869,14 @@ export namespace Prisma {
   };
 
   export type DataPointScalarFieldEnum = (typeof DataPointScalarFieldEnum)[keyof typeof DataPointScalarFieldEnum]
+
+
+  export const TokenUpdateLogScalarFieldEnum: {
+    id: 'id',
+    lastRefreshedAt: 'lastRefreshedAt'
+  };
+
+  export type TokenUpdateLogScalarFieldEnum = (typeof TokenUpdateLogScalarFieldEnum)[keyof typeof TokenUpdateLogScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -6173,6 +7226,43 @@ export namespace Prisma {
     frequency?: EnumFrequencyWithAggregatesFilter<"DataPoint"> | $Enums.Frequency
   }
 
+  export type TokenUpdateLogWhereInput = {
+    AND?: TokenUpdateLogWhereInput | TokenUpdateLogWhereInput[]
+    OR?: TokenUpdateLogWhereInput[]
+    NOT?: TokenUpdateLogWhereInput | TokenUpdateLogWhereInput[]
+    id?: StringFilter<"TokenUpdateLog"> | string
+    lastRefreshedAt?: DateTimeNullableFilter<"TokenUpdateLog"> | Date | string | null
+  }
+
+  export type TokenUpdateLogOrderByWithRelationInput = {
+    id?: SortOrder
+    lastRefreshedAt?: SortOrderInput | SortOrder
+  }
+
+  export type TokenUpdateLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TokenUpdateLogWhereInput | TokenUpdateLogWhereInput[]
+    OR?: TokenUpdateLogWhereInput[]
+    NOT?: TokenUpdateLogWhereInput | TokenUpdateLogWhereInput[]
+    lastRefreshedAt?: DateTimeNullableFilter<"TokenUpdateLog"> | Date | string | null
+  }, "id">
+
+  export type TokenUpdateLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    lastRefreshedAt?: SortOrderInput | SortOrder
+    _count?: TokenUpdateLogCountOrderByAggregateInput
+    _max?: TokenUpdateLogMaxOrderByAggregateInput
+    _min?: TokenUpdateLogMinOrderByAggregateInput
+  }
+
+  export type TokenUpdateLogScalarWhereWithAggregatesInput = {
+    AND?: TokenUpdateLogScalarWhereWithAggregatesInput | TokenUpdateLogScalarWhereWithAggregatesInput[]
+    OR?: TokenUpdateLogScalarWhereWithAggregatesInput[]
+    NOT?: TokenUpdateLogScalarWhereWithAggregatesInput | TokenUpdateLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TokenUpdateLog"> | string
+    lastRefreshedAt?: DateTimeNullableWithAggregatesFilter<"TokenUpdateLog"> | Date | string | null
+  }
+
   export type TokenCreateInput = {
     id?: string
     symbol: string
@@ -6475,6 +7565,41 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     priceUSD?: FloatFieldUpdateOperationsInput | number
     frequency?: EnumFrequencyFieldUpdateOperationsInput | $Enums.Frequency
+  }
+
+  export type TokenUpdateLogCreateInput = {
+    id?: string
+    lastRefreshedAt?: Date | string | null
+  }
+
+  export type TokenUpdateLogUncheckedCreateInput = {
+    id?: string
+    lastRefreshedAt?: Date | string | null
+  }
+
+  export type TokenUpdateLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lastRefreshedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TokenUpdateLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lastRefreshedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TokenUpdateLogCreateManyInput = {
+    id?: string
+    lastRefreshedAt?: Date | string | null
+  }
+
+  export type TokenUpdateLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lastRefreshedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TokenUpdateLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lastRefreshedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -6887,6 +8012,21 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFrequencyFilter<$PrismaModel>
     _max?: NestedEnumFrequencyFilter<$PrismaModel>
+  }
+
+  export type TokenUpdateLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    lastRefreshedAt?: SortOrder
+  }
+
+  export type TokenUpdateLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    lastRefreshedAt?: SortOrder
+  }
+
+  export type TokenUpdateLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    lastRefreshedAt?: SortOrder
   }
 
   export type DataPointCreateNestedManyWithoutTokenInput = {
