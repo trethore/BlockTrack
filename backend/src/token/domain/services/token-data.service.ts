@@ -7,7 +7,7 @@ interface CoinGeckoMarketData {
 }
 
 export interface MappedTokenData {
-    symbol: string; name: string; rank: number; priceUSD: number; marketCapUsd?: number | null; volume24hUsd?: number | null; circulatingSupply?: bigint | null; totalSupply?: bigint | null; maxSupply?: bigint | null; percentChange1h?: number | null; percentChange24h?: number | null; percentChange7d?: number | null; percentChange30d?: number | null; percentChange1y?: number | null; marketCapChange24h?: number | null; lastDataPointsUpdate?: Date | null; // Use the new field name
+    symbol: string; name: string; rank: number; priceUSD: number; marketCapUsd?: number | null; volume24hUsd?: number | null; circulatingSupply?: bigint | null; totalSupply?: bigint | null; maxSupply?: bigint | null; percentChange1h?: number | null; percentChange24h?: number | null; percentChange7d?: number | null; percentChange30d?: number | null; percentChange1y?: number | null; marketCapChange24h?: number | null; lastUpdated?: Date | null;
 }
 
 @Injectable()
@@ -61,7 +61,7 @@ export class TokenDataService {
                 percentChange30d: token.price_change_percentage_30d_in_currency ?? null,
                 percentChange1y: token.price_change_percentage_1y_in_currency ?? null,
                 marketCapChange24h: token.market_cap_change_24h ?? null,
-                lastDataPointsUpdate: token.last_updated ? new Date(token.last_updated) : null,
+                lastUpdated: token.last_updated ? new Date(token.last_updated) : null,
             }));
     }
 }

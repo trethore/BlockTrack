@@ -53,7 +53,7 @@ export class PrismaTokenRepository implements ITokenRepository {
         percentChange30d: tokenData.percentChange30d,
         percentChange1y: tokenData.percentChange1y,
         marketCapChange24h: tokenData.marketCapChange24h,
-        lastDataPointsUpdate: tokenData.lastDataPointsUpdate, // Use new field
+        lastUpdated: tokenData.lastUpdated,
       };
       return this.prisma.token.upsert({
         where: { symbol: tokenData.symbol },
