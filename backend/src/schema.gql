@@ -65,6 +65,11 @@ type Mutation {
 }
 
 type Query {
+  """
+  Checks if the current authentication token is valid (not expired and correctly signed).
+  """
+  isTokenValid: Boolean!
+
   """Gets the currently authenticated user"""
   me: UserEntity!
 
