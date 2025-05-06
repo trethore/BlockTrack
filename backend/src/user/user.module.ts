@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { UserResolver } from './interface-adapters/graphql/user.resolver';
 import { AuthResolver } from './interface-adapters/graphql/auth.resolver';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -9,27 +9,28 @@ import { LoginUserUseCase } from './use-cases/login-user.use-case';
 import { GetUserUseCase } from './use-cases/get-user.use-case';
 import { UpdateUserUseCase } from './use-cases/update-user.use-case';
 import { DeleteUserUseCase } from './use-cases/delete-user.use-case';
-import { AuthModule } from '../infrastructure/auth/auth.module'; 
+import { AuthModule } from '../infrastructure/auth/auth.module';
+import { TokenModule } from '../token/token.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule], 
+  imports: [PrismaModule, AuthModule, forwardRef(() => TokenModule)],
   providers: [
     {
       provide: IUserRepository,
       useClass: PrismaUserRepository,
     },
-    
+
     CreateUserUseCase,
     LoginUserUseCase,
     GetUserUseCase,
     UpdateUserUseCase,
     DeleteUserUseCase,
-    
+
     UserResolver,
     AuthResolver,
   ],
   exports: [
     IUserRepository
-  ], 
+  ],
 })
-export class UserModule {}
+export class UserModule { }

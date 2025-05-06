@@ -3,7 +3,6 @@ import { UseGuards, Inject } from '@nestjs/common';
 import { TokenEntity } from '../entities/token.entity';
 import { GetAllTokensUseCase } from '../../../use-cases/get-all-tokens.use-case';
 import { GetTokenUseCase } from '../../../use-cases/get-token.use-case';
-import { GetFavoriteTokensUseCase } from '../../../use-cases/get-favorite-tokens.use-case';
 import { GetTokenInput } from '../dto/get-token.input';
 import { JwtAuthGuard } from '../../../../infrastructure/auth/jwt-auth.guard';
 import { CurrentUser } from '../../../../infrastructure/auth/current-user.decorator';
@@ -18,7 +17,6 @@ export class TokenResolver {
   constructor(
     private readonly getAllTokensUseCase: GetAllTokensUseCase,
     private readonly getTokenUseCase: GetTokenUseCase,
-    private readonly getFavoriteTokensUseCase: GetFavoriteTokensUseCase,
     private readonly addFavoriteTokenUseCase: AddFavoriteTokenUseCase,
     private readonly removeFavoriteTokenUseCase: RemoveFavoriteTokenUseCase,
     @Inject(IDataPointRepository)
@@ -40,17 +38,6 @@ export class TokenResolver {
   })
   async getToken(@Args('input') input: GetTokenInput): Promise<TokenEntity> {
     return this.getTokenUseCase.execute(input);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Query(() => [TokenEntity], {
-    name: 'myFavoriteTokens',
-    description: "Returns the authenticated user's favorite tokens",
-  })
-  async getMyFavoriteTokens(
-    @CurrentUser() user: { id: string },
-  ): Promise<TokenEntity[]> {
-    return this.getFavoriteTokensUseCase.execute({ userId: user.id });
   }
 
   @UseGuards(JwtAuthGuard)

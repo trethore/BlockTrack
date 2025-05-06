@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -17,7 +17,6 @@ import { PrismaDataPointRepository } from '../infrastructure/repositories/prisma
 
 import { GetAllTokensUseCase } from './use-cases/get-all-tokens.use-case';
 import { GetTokenUseCase } from './use-cases/get-token.use-case';
-import { GetFavoriteTokensUseCase } from './use-cases/get-favorite-tokens.use-case';
 import { AddFavoriteTokenUseCase } from './use-cases/add-favorite-token.use-case';
 import { RemoveFavoriteTokenUseCase } from './use-cases/remove-favorite-token.use-case';
 
@@ -29,7 +28,7 @@ import { TokenResolver } from './interface-adapters/graphql/resolvers/token.reso
   imports: [
     PrismaModule,
     AuthModule,
-    UserModule,
+    forwardRef(() => UserModule),
     HttpModule,
     ConfigModule,
   ],
@@ -43,12 +42,13 @@ import { TokenResolver } from './interface-adapters/graphql/resolvers/token.reso
 
     GetAllTokensUseCase,
     GetTokenUseCase,
-    GetFavoriteTokensUseCase,
     AddFavoriteTokenUseCase,
     RemoveFavoriteTokenUseCase,
 
     TokenResolver,
   ],
-  exports: []
+  exports: [
+    IFavoriteRepository
+  ]
 })
 export class TokenModule { }

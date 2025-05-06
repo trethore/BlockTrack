@@ -68,9 +68,6 @@ type Query {
   """Gets the currently authenticated user"""
   me: UserEntity!
 
-  """Returns the authenticated user's favorite tokens"""
-  myFavoriteTokens: [TokenEntity!]!
-
   """Returns a single token by ID or symbol"""
   token(input: GetTokenInput!): TokenEntity
 
@@ -114,6 +111,7 @@ input UpdateUserInput {
 type UserEntity {
   createdAt: DateTime!
   email: String!
+  favorites: [TokenEntity]
   id: ID!
   updatedAt: DateTime!
   username: String!

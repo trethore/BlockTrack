@@ -1,12 +1,14 @@
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
+import { Resolver, Query, Mutation, Args, ID, ResolveField, Parent } from '@nestjs/graphql';
+import { Inject, UseGuards } from '@nestjs/common';
 import { UserEntity } from './entities/user.entity';
+import { TokenEntity } from '../../../token/interface-adapters/graphql/entities/token.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { CreateUserUseCase } from '../../use-cases/create-user.use-case';
 import { GetUserUseCase } from '../../use-cases/get-user.use-case';
 import { UpdateUserUseCase } from '../../use-cases/update-user.use-case';
 import { DeleteUserUseCase } from '../../use-cases/delete-user.use-case';
+import { IFavoriteRepository } from '../../../token/domain/ports/favorite.repository.interface';
 import { JwtAuthGuard } from '../../../infrastructure/auth/jwt-auth.guard';
 import { CurrentUser } from '../../../infrastructure/auth/current-user.decorator';
 import { User } from '@generated/prisma';
@@ -18,6 +20,7 @@ export class UserResolver {
     private readonly getUserUseCase: GetUserUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
+    @Inject(IFavoriteRepository) private readonly favoriteRepository: IFavoriteRepository,
   ) { }
 
   @Mutation(() => UserEntity, { description: 'Creates a new user account' })
@@ -33,6 +36,13 @@ export class UserResolver {
   async getMe(@CurrentUser() user: { id: string }): Promise<UserEntity> {
     const foundUser = await this.getUserUseCase.execute({ userId: user.id });
     return foundUser;
+  }
+
+  @ResolveField(() => [TokenEntity], { name: 'favorites', nullable: 'itemsAndList' })
+  async getFavorites(@Parent() user: UserEntity): Promise<TokenEntity[]> {
+    console.log(`Resolving favorites for user: ${user.id} (${user.username})`);
+    const favoriteTokens = await this.favoriteRepository.findTokensByUserId(user.id);
+    return favoriteTokens;
   }
 
   @UseGuards(JwtAuthGuard)
