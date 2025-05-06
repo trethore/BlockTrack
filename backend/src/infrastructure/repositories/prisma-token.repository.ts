@@ -58,7 +58,7 @@ export class PrismaTokenRepository implements ITokenRepository {
       return this.prisma.token.upsert({
         where: { symbol: tokenData.symbol },
         update: payload,
-        create: { symbol: tokenData.symbol, ...payload },
+        create: { id: tokenData.id, symbol: tokenData.symbol, ...payload },
       });
     });
 

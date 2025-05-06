@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Token {
-  id                   String    @id @default(uuid()) @map("tokenId")
+  id                   String    @id @map("tokenId")
   symbol               String    @unique
   name                 String
   rank                 Int
@@ -57,21 +57,13 @@ model Favorite {
 }
 
 model DataPoint {
-  id        String    @id @default(uuid())
-  token     Token     @relation(fields: [tokenId], references: [id], onDelete: Cascade)
-  tokenId   String
-  date      DateTime
-  priceUSD  Float
-  frequency Frequency @default(DAILY)
+  id       String   @id @default(uuid())
+  token    Token    @relation(fields: [tokenId], references: [id], onDelete: Cascade)
+  tokenId  String
+  date     DateTime
+  priceUSD Float
 
   @@index([tokenId, date])
-}
-
-enum Frequency {
-  DAILY
-  WEEKLY
-  MONTHLY
-  YEARLY
 }
 
 model TokenUpdateLog {

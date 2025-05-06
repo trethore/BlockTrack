@@ -29,65 +29,73 @@ async function main() {
     console.log(`Created user with id: ${user1.id}`);
 
     // --- Création Tokens ---
-    const createdTokens = await prisma.token.createMany({
-        data: [
-            {
-                symbol: 'BTC',
-                name: 'Bitcoin',
-                rank: 1,
-                priceUSD: 60000.50,
-                marketCapUsd: 1200000000000.0,
-                circulatingSupply: 19700000n,
-                totalSupply: 19700000n,
-                maxSupply: 21000000n,
-                percentChange24h: 1.5,
-                lastUpdated: new Date(),
-            },
-            {
-                symbol: 'ETH',
-                name: 'Ethereum',
-                rank: 2,
-                priceUSD: 3000.75,
-                marketCapUsd: 360000000000.0,
-                circulatingSupply: 120000000n,
-                totalSupply: 120000000n,
-                maxSupply: null,
-                percentChange24h: 2.1,
-                lastUpdated: new Date(),
-            },
-            {
-                symbol: 'SOL',
-                name: 'Solana',
-                rank: 5,
-                priceUSD: 150.20,
-                marketCapUsd: 70000000000.0,
-                circulatingSupply: 460000000n,
-                totalSupply: 570000000n,
-                maxSupply: null,
-                percentChange24h: -0.5,
-                lastUpdated: new Date(),
-            },
-            {
-                symbol: 'ADA',
-                name: 'Cardano',
-                rank: 10,
-                priceUSD: 0.45,
-                marketCapUsd: 16000000000.0,
-                circulatingSupply: 35000000000n,
-                totalSupply: 36000000000n,
-                maxSupply: 45000000000n,
-                percentChange24h: 0.8,
-                lastUpdated: new Date(),
-            },
-        ],
+    const btc = await prisma.token.create({
+        data: {
+            id: 'bitcoin',
+            symbol: 'BTC',
+            name: 'Bitcoin',
+            rank: 1,
+            priceUSD: 60000.50,
+            marketCapUsd: 1200000000000.0,
+            circulatingSupply: 19700000n,
+            totalSupply: 19700000n,
+            maxSupply: 21000000n,
+            percentChange24h: 1.5,
+            lastUpdated: new Date(),
+        },
     });
-    console.log(`Created ${createdTokens.count} tokens.`);
+    console.log(`Created token: ${btc.name} (ID: ${btc.id})`);
 
-    const btc = await prisma.token.findUnique({ where: { symbol: 'BTC' } });
-    const eth = await prisma.token.findUnique({ where: { symbol: 'ETH' } });
-    if (!btc || !eth) {
-        throw new Error("Could not find created tokens BTC or ETH to create favorites.");
-    }
+    const eth = await prisma.token.create({
+        data: {
+            id: 'ethereum',
+            symbol: 'ETH',
+            name: 'Ethereum',
+            rank: 2,
+            priceUSD: 3000.75,
+            marketCapUsd: 360000000000.0,
+            circulatingSupply: 120000000n,
+            totalSupply: 120000000n,
+            maxSupply: null,
+            percentChange24h: 2.1,
+            lastUpdated: new Date(),
+        },
+    });
+    console.log(`Created token: ${eth.name} (ID: ${eth.id})`);
+
+    const sol = await prisma.token.create({
+        data: {
+            id: 'solana',
+            symbol: 'SOL',
+            name: 'Solana',
+            rank: 5,
+            priceUSD: 150.20,
+            marketCapUsd: 70000000000.0,
+            circulatingSupply: 460000000n,
+            totalSupply: 570000000n,
+            maxSupply: null,
+            percentChange24h: -0.5,
+            lastUpdated: new Date(),
+        },
+    });
+    console.log(`Created token: ${sol.name} (ID: ${sol.id})`);
+
+    const ada = await prisma.token.create({
+        data: {
+            id: 'cardano',
+            symbol: 'ADA',
+            name: 'Cardano',
+            rank: 10,
+            priceUSD: 0.45,
+            marketCapUsd: 16000000000.0,
+            circulatingSupply: 35000000000n,
+            totalSupply: 36000000000n,
+            maxSupply: 45000000000n,
+            percentChange24h: 0.8,
+            lastUpdated: new Date(),
+        },
+    });
+    console.log(`Created token: ${ada.name} (ID: ${ada.id})`);
 
     // --- Création Favoris ---
     await prisma.favorite.createMany({
@@ -104,8 +112,6 @@ async function main() {
         create: { id: 'SINGLETON', lastRefreshedAt: new Date() },
     });
     console.log('Upserted token update log.');
-
-    console.log('Seeding finished.');
 }
 
 main()

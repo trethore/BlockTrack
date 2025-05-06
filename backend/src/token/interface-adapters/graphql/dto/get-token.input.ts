@@ -5,7 +5,7 @@ import { IsOptional, IsString, IsUUID, ValidateIf, IsNotEmpty } from 'class-vali
 export class GetTokenInput {
   @Field(() => ID, { nullable: true })
   @IsOptional()
-  @IsUUID('4', { message: 'ID must be a valid UUID' })
+  @IsString({ message: 'ID must be a string' })
   @ValidateIf(o => !o.symbol)
   @IsNotEmpty({ message: 'Either id or symbol must be provided' })
   id?: string;

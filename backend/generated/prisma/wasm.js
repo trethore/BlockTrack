@@ -156,8 +156,7 @@ exports.Prisma.DataPointScalarFieldEnum = {
   id: 'id',
   tokenId: 'tokenId',
   date: 'date',
-  priceUSD: 'priceUSD',
-  frequency: 'frequency'
+  priceUSD: 'priceUSD'
 };
 
 exports.Prisma.TokenUpdateLogScalarFieldEnum = {
@@ -174,12 +173,7 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.Frequency = exports.$Enums.Frequency = {
-  DAILY: 'DAILY',
-  WEEKLY: 'WEEKLY',
-  MONTHLY: 'MONTHLY',
-  YEARLY: 'YEARLY'
-};
+
 
 exports.Prisma.ModelName = {
   Token: 'Token',

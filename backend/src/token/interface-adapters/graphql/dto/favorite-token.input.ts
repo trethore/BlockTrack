@@ -5,6 +5,5 @@ import { IsNotEmpty, IsUUID } from 'class-validator';
 export class FavoriteTokenInput {
     @Field(() => ID)
     @IsNotEmpty()
-    @IsUUID('4', { message: 'tokenId must be a valid UUID' })
     tokenId: string;
 }

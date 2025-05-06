@@ -40,25 +40,6 @@ export type DataPoint = $Result.DefaultSelection<Prisma.$DataPointPayload>
 export type TokenUpdateLog = $Result.DefaultSelection<Prisma.$TokenUpdateLogPayload>
 
 /**
- * Enums
- */
-export namespace $Enums {
-  export const Frequency: {
-  DAILY: 'DAILY',
-  WEEKLY: 'WEEKLY',
-  MONTHLY: 'MONTHLY',
-  YEARLY: 'YEARLY'
-};
-
-export type Frequency = (typeof Frequency)[keyof typeof Frequency]
-
-}
-
-export type Frequency = $Enums.Frequency
-
-export const Frequency: typeof $Enums.Frequency
-
-/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -4800,7 +4781,6 @@ export namespace Prisma {
     tokenId: string | null
     date: Date | null
     priceUSD: number | null
-    frequency: $Enums.Frequency | null
   }
 
   export type DataPointMaxAggregateOutputType = {
@@ -4808,7 +4788,6 @@ export namespace Prisma {
     tokenId: string | null
     date: Date | null
     priceUSD: number | null
-    frequency: $Enums.Frequency | null
   }
 
   export type DataPointCountAggregateOutputType = {
@@ -4816,7 +4795,6 @@ export namespace Prisma {
     tokenId: number
     date: number
     priceUSD: number
-    frequency: number
     _all: number
   }
 
@@ -4834,7 +4812,6 @@ export namespace Prisma {
     tokenId?: true
     date?: true
     priceUSD?: true
-    frequency?: true
   }
 
   export type DataPointMaxAggregateInputType = {
@@ -4842,7 +4819,6 @@ export namespace Prisma {
     tokenId?: true
     date?: true
     priceUSD?: true
-    frequency?: true
   }
 
   export type DataPointCountAggregateInputType = {
@@ -4850,7 +4826,6 @@ export namespace Prisma {
     tokenId?: true
     date?: true
     priceUSD?: true
-    frequency?: true
     _all?: true
   }
 
@@ -4945,7 +4920,6 @@ export namespace Prisma {
     tokenId: string
     date: Date
     priceUSD: number
-    frequency: $Enums.Frequency
     _count: DataPointCountAggregateOutputType | null
     _avg: DataPointAvgAggregateOutputType | null
     _sum: DataPointSumAggregateOutputType | null
@@ -4972,7 +4946,6 @@ export namespace Prisma {
     tokenId?: boolean
     date?: boolean
     priceUSD?: boolean
-    frequency?: boolean
     token?: boolean | TokenDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["dataPoint"]>
 
@@ -4981,7 +4954,6 @@ export namespace Prisma {
     tokenId?: boolean
     date?: boolean
     priceUSD?: boolean
-    frequency?: boolean
     token?: boolean | TokenDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["dataPoint"]>
 
@@ -4990,7 +4962,6 @@ export namespace Prisma {
     tokenId?: boolean
     date?: boolean
     priceUSD?: boolean
-    frequency?: boolean
     token?: boolean | TokenDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["dataPoint"]>
 
@@ -4999,10 +4970,9 @@ export namespace Prisma {
     tokenId?: boolean
     date?: boolean
     priceUSD?: boolean
-    frequency?: boolean
   }
 
-  export type DataPointOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tokenId" | "date" | "priceUSD" | "frequency", ExtArgs["result"]["dataPoint"]>
+  export type DataPointOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tokenId" | "date" | "priceUSD", ExtArgs["result"]["dataPoint"]>
   export type DataPointInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     token?: boolean | TokenDefaultArgs<ExtArgs>
   }
@@ -5023,7 +4993,6 @@ export namespace Prisma {
       tokenId: string
       date: Date
       priceUSD: number
-      frequency: $Enums.Frequency
     }, ExtArgs["result"]["dataPoint"]>
     composites: {}
   }
@@ -5452,7 +5421,6 @@ export namespace Prisma {
     readonly tokenId: FieldRef<"DataPoint", 'String'>
     readonly date: FieldRef<"DataPoint", 'DateTime'>
     readonly priceUSD: FieldRef<"DataPoint", 'Float'>
-    readonly frequency: FieldRef<"DataPoint", 'Frequency'>
   }
     
 
@@ -6878,8 +6846,7 @@ export namespace Prisma {
     id: 'id',
     tokenId: 'tokenId',
     date: 'date',
-    priceUSD: 'priceUSD',
-    frequency: 'frequency'
+    priceUSD: 'priceUSD'
   };
 
   export type DataPointScalarFieldEnum = (typeof DataPointScalarFieldEnum)[keyof typeof DataPointScalarFieldEnum]
@@ -6946,13 +6913,6 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-  /**
-   * Reference to a field of type 'Frequency'
-   */
-  export type EnumFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Frequency'>
     
   /**
    * Deep Input Types
@@ -7196,7 +7156,6 @@ export namespace Prisma {
     tokenId?: StringFilter<"DataPoint"> | string
     date?: DateTimeFilter<"DataPoint"> | Date | string
     priceUSD?: FloatFilter<"DataPoint"> | number
-    frequency?: EnumFrequencyFilter<"DataPoint"> | $Enums.Frequency
     token?: XOR<TokenScalarRelationFilter, TokenWhereInput>
   }
 
@@ -7205,7 +7164,6 @@ export namespace Prisma {
     tokenId?: SortOrder
     date?: SortOrder
     priceUSD?: SortOrder
-    frequency?: SortOrder
     token?: TokenOrderByWithRelationInput
   }
 
@@ -7217,7 +7175,6 @@ export namespace Prisma {
     tokenId?: StringFilter<"DataPoint"> | string
     date?: DateTimeFilter<"DataPoint"> | Date | string
     priceUSD?: FloatFilter<"DataPoint"> | number
-    frequency?: EnumFrequencyFilter<"DataPoint"> | $Enums.Frequency
     token?: XOR<TokenScalarRelationFilter, TokenWhereInput>
   }, "id">
 
@@ -7226,7 +7183,6 @@ export namespace Prisma {
     tokenId?: SortOrder
     date?: SortOrder
     priceUSD?: SortOrder
-    frequency?: SortOrder
     _count?: DataPointCountOrderByAggregateInput
     _avg?: DataPointAvgOrderByAggregateInput
     _max?: DataPointMaxOrderByAggregateInput
@@ -7242,7 +7198,6 @@ export namespace Prisma {
     tokenId?: StringWithAggregatesFilter<"DataPoint"> | string
     date?: DateTimeWithAggregatesFilter<"DataPoint"> | Date | string
     priceUSD?: FloatWithAggregatesFilter<"DataPoint"> | number
-    frequency?: EnumFrequencyWithAggregatesFilter<"DataPoint"> | $Enums.Frequency
   }
 
   export type TokenUpdateLogWhereInput = {
@@ -7283,7 +7238,7 @@ export namespace Prisma {
   }
 
   export type TokenCreateInput = {
-    id?: string
+    id: string
     symbol: string
     name: string
     rank: number
@@ -7306,7 +7261,7 @@ export namespace Prisma {
   }
 
   export type TokenUncheckedCreateInput = {
-    id?: string
+    id: string
     symbol: string
     name: string
     rank: number
@@ -7375,7 +7330,7 @@ export namespace Prisma {
   }
 
   export type TokenCreateManyInput = {
-    id?: string
+    id: string
     symbol: string
     name: string
     rank: number
@@ -7542,7 +7497,6 @@ export namespace Prisma {
     id?: string
     date: Date | string
     priceUSD: number
-    frequency?: $Enums.Frequency
     token: TokenCreateNestedOneWithoutDataPointsInput
   }
 
@@ -7551,14 +7505,12 @@ export namespace Prisma {
     tokenId: string
     date: Date | string
     priceUSD: number
-    frequency?: $Enums.Frequency
   }
 
   export type DataPointUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     priceUSD?: FloatFieldUpdateOperationsInput | number
-    frequency?: EnumFrequencyFieldUpdateOperationsInput | $Enums.Frequency
     token?: TokenUpdateOneRequiredWithoutDataPointsNestedInput
   }
 
@@ -7567,7 +7519,6 @@ export namespace Prisma {
     tokenId?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     priceUSD?: FloatFieldUpdateOperationsInput | number
-    frequency?: EnumFrequencyFieldUpdateOperationsInput | $Enums.Frequency
   }
 
   export type DataPointCreateManyInput = {
@@ -7575,14 +7526,12 @@ export namespace Prisma {
     tokenId: string
     date: Date | string
     priceUSD: number
-    frequency?: $Enums.Frequency
   }
 
   export type DataPointUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     priceUSD?: FloatFieldUpdateOperationsInput | number
-    frequency?: EnumFrequencyFieldUpdateOperationsInput | $Enums.Frequency
   }
 
   export type DataPointUncheckedUpdateManyInput = {
@@ -7590,7 +7539,6 @@ export namespace Prisma {
     tokenId?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     priceUSD?: FloatFieldUpdateOperationsInput | number
-    frequency?: EnumFrequencyFieldUpdateOperationsInput | $Enums.Frequency
   }
 
   export type TokenUpdateLogCreateInput = {
@@ -7994,19 +7942,11 @@ export namespace Prisma {
     tokenId?: SortOrder
   }
 
-  export type EnumFrequencyFilter<$PrismaModel = never> = {
-    equals?: $Enums.Frequency | EnumFrequencyFieldRefInput<$PrismaModel>
-    in?: $Enums.Frequency[]
-    notIn?: $Enums.Frequency[]
-    not?: NestedEnumFrequencyFilter<$PrismaModel> | $Enums.Frequency
-  }
-
   export type DataPointCountOrderByAggregateInput = {
     id?: SortOrder
     tokenId?: SortOrder
     date?: SortOrder
     priceUSD?: SortOrder
-    frequency?: SortOrder
   }
 
   export type DataPointAvgOrderByAggregateInput = {
@@ -8018,7 +7958,6 @@ export namespace Prisma {
     tokenId?: SortOrder
     date?: SortOrder
     priceUSD?: SortOrder
-    frequency?: SortOrder
   }
 
   export type DataPointMinOrderByAggregateInput = {
@@ -8026,21 +7965,10 @@ export namespace Prisma {
     tokenId?: SortOrder
     date?: SortOrder
     priceUSD?: SortOrder
-    frequency?: SortOrder
   }
 
   export type DataPointSumOrderByAggregateInput = {
     priceUSD?: SortOrder
-  }
-
-  export type EnumFrequencyWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Frequency | EnumFrequencyFieldRefInput<$PrismaModel>
-    in?: $Enums.Frequency[]
-    notIn?: $Enums.Frequency[]
-    not?: NestedEnumFrequencyWithAggregatesFilter<$PrismaModel> | $Enums.Frequency
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumFrequencyFilter<$PrismaModel>
-    _max?: NestedEnumFrequencyFilter<$PrismaModel>
   }
 
   export type TokenUpdateLogCountOrderByAggregateInput = {
@@ -8262,10 +8190,6 @@ export namespace Prisma {
     connect?: TokenWhereUniqueInput
   }
 
-  export type EnumFrequencyFieldUpdateOperationsInput = {
-    set?: $Enums.Frequency
-  }
-
   export type TokenUpdateOneRequiredWithoutDataPointsNestedInput = {
     create?: XOR<TokenCreateWithoutDataPointsInput, TokenUncheckedCreateWithoutDataPointsInput>
     connectOrCreate?: TokenCreateOrConnectWithoutDataPointsInput
@@ -8474,35 +8398,16 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedEnumFrequencyFilter<$PrismaModel = never> = {
-    equals?: $Enums.Frequency | EnumFrequencyFieldRefInput<$PrismaModel>
-    in?: $Enums.Frequency[]
-    notIn?: $Enums.Frequency[]
-    not?: NestedEnumFrequencyFilter<$PrismaModel> | $Enums.Frequency
-  }
-
-  export type NestedEnumFrequencyWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Frequency | EnumFrequencyFieldRefInput<$PrismaModel>
-    in?: $Enums.Frequency[]
-    notIn?: $Enums.Frequency[]
-    not?: NestedEnumFrequencyWithAggregatesFilter<$PrismaModel> | $Enums.Frequency
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumFrequencyFilter<$PrismaModel>
-    _max?: NestedEnumFrequencyFilter<$PrismaModel>
-  }
-
   export type DataPointCreateWithoutTokenInput = {
     id?: string
     date: Date | string
     priceUSD: number
-    frequency?: $Enums.Frequency
   }
 
   export type DataPointUncheckedCreateWithoutTokenInput = {
     id?: string
     date: Date | string
     priceUSD: number
-    frequency?: $Enums.Frequency
   }
 
   export type DataPointCreateOrConnectWithoutTokenInput = {
@@ -8555,7 +8460,6 @@ export namespace Prisma {
     tokenId?: StringFilter<"DataPoint"> | string
     date?: DateTimeFilter<"DataPoint"> | Date | string
     priceUSD?: FloatFilter<"DataPoint"> | number
-    frequency?: EnumFrequencyFilter<"DataPoint"> | $Enums.Frequency
   }
 
   export type FavoriteUpsertWithWhereUniqueWithoutTokenInput = {
@@ -8639,7 +8543,7 @@ export namespace Prisma {
   }
 
   export type TokenCreateWithoutFavoritesInput = {
-    id?: string
+    id: string
     symbol: string
     name: string
     rank: number
@@ -8661,7 +8565,7 @@ export namespace Prisma {
   }
 
   export type TokenUncheckedCreateWithoutFavoritesInput = {
-    id?: string
+    id: string
     symbol: string
     name: string
     rank: number
@@ -8772,7 +8676,7 @@ export namespace Prisma {
   }
 
   export type TokenCreateWithoutDataPointsInput = {
-    id?: string
+    id: string
     symbol: string
     name: string
     rank: number
@@ -8794,7 +8698,7 @@ export namespace Prisma {
   }
 
   export type TokenUncheckedCreateWithoutDataPointsInput = {
-    id?: string
+    id: string
     symbol: string
     name: string
     rank: number
@@ -8879,7 +8783,6 @@ export namespace Prisma {
     id?: string
     date: Date | string
     priceUSD: number
-    frequency?: $Enums.Frequency
   }
 
   export type FavoriteCreateManyTokenInput = {
@@ -8890,21 +8793,18 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     priceUSD?: FloatFieldUpdateOperationsInput | number
-    frequency?: EnumFrequencyFieldUpdateOperationsInput | $Enums.Frequency
   }
 
   export type DataPointUncheckedUpdateWithoutTokenInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     priceUSD?: FloatFieldUpdateOperationsInput | number
-    frequency?: EnumFrequencyFieldUpdateOperationsInput | $Enums.Frequency
   }
 
   export type DataPointUncheckedUpdateManyWithoutTokenInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     priceUSD?: FloatFieldUpdateOperationsInput | number
-    frequency?: EnumFrequencyFieldUpdateOperationsInput | $Enums.Frequency
   }
 
   export type FavoriteUpdateWithoutTokenInput = {
