@@ -1,12 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common'; // Import Logger
+import { Injectable, Logger } from '@nestjs/common';
 import { ITokenRepository } from '../../token/domain/ports/token.repository.interface';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Token, Prisma } from '@generated/prisma'; // Import Prisma
-import { MappedTokenData } from '../../token/domain/services/token-data.service'; // Adjust path
+import { Token, Prisma } from '@generated/prisma';
+import { MappedTokenData } from '../../token/domain/services/token-data.service';
 
 @Injectable()
 export class PrismaTokenRepository implements ITokenRepository {
-  private readonly logger = new Logger(PrismaTokenRepository.name); // Add logger
+  private readonly logger = new Logger(PrismaTokenRepository.name);
 
   constructor(private readonly prisma: PrismaService) { }
 
@@ -72,6 +72,19 @@ export class PrismaTokenRepository implements ITokenRepository {
         this.logger.error(`Prisma Error Code: ${error.code}`);
       }
       throw error;
+    }
+  }
+
+  async update(id: string, data: Prisma.TokenUpdateInput): Promise<Token | null> {
+    try {
+      const updatedToken = await this.prisma.token.update({
+        where: { id },
+        data,
+      });
+      return updatedToken;
+    } catch (error) {
+      this.logger.error(`Failed to update token with id ${id}`, error);
+      return null;
     }
   }
 }

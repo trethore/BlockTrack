@@ -1,7 +1,7 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { IFavoriteRepository } from '../domain/ports/favorite.repository.interface';
 import { Token } from '@generated/prisma';
-import { IUserRepository } from '../../user/domain/ports/user.repository.interface'; // Assuming a user module exists
+import { IUserRepository } from '../../user/domain/ports/user.repository.interface';
 
 interface GetFavoriteTokensQuery {
   userId: string;

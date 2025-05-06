@@ -10,10 +10,19 @@ export interface MappedTokenData {
     symbol: string; name: string; rank: number; priceUSD: number; marketCapUsd?: number | null; volume24hUsd?: number | null; circulatingSupply?: bigint | null; totalSupply?: bigint | null; maxSupply?: bigint | null; percentChange1h?: number | null; percentChange24h?: number | null; percentChange7d?: number | null; percentChange30d?: number | null; percentChange1y?: number | null; marketCapChange24h?: number | null; lastUpdated?: Date | null;
 }
 
+interface CoinGeckoChartData {
+    prices: [number, number][];
+}
+
+export interface MappedDataPoint {
+    date: Date;
+    priceUSD: number;
+}
+
 @Injectable()
 export class TokenDataService {
     private readonly logger = new Logger(TokenDataService.name);
-    private readonly coinGeckoUrl = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&price_change_percentage=1h,24h,7d,30d,1y';
+    private readonly coinGeckoApiBase = 'https://api.coingecko.com/api/v3';
 
     constructor(
         private readonly httpService: HttpService,
@@ -22,8 +31,9 @@ export class TokenDataService {
     async fetchAndMapTokenData(): Promise<MappedTokenData[]> {
         this.logger.log(`Fetching token data from CoinGecko...`);
         try {
+            const marketsUrl = `${this.coinGeckoApiBase}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&price_change_percentage=1h,24h,7d,30d,1y`;
             const response = await firstValueFrom(
-                this.httpService.get<CoinGeckoMarketData[]>(this.coinGeckoUrl, {
+                this.httpService.get<CoinGeckoMarketData[]>(marketsUrl, {
                     headers: { 'Accept': 'application/json' }
                 })
             );
@@ -38,13 +48,13 @@ export class TokenDataService {
 
         } catch (error) {
             this.logger.error('Error fetching/processing CoinGecko data:', error?.response?.data || error?.message || error);
-            throw new Error('Failed to fetch/process token data from API.'); // Propagate error
+            throw new Error('Failed to fetch/process token data from API.');
         }
     }
 
     private mapData(apiData: CoinGeckoMarketData[]): MappedTokenData[] {
         return apiData
-            .filter(token => token.symbol && token.name && token.market_cap_rank != null && token.current_price != null) // Basic validation
+            .filter(token => token.symbol && token.name && token.market_cap_rank != null && token.current_price != null)
             .map(token => ({
                 symbol: token.symbol.toUpperCase(),
                 name: token.name,
@@ -63,5 +73,49 @@ export class TokenDataService {
                 marketCapChange24h: token.market_cap_change_24h ?? null,
                 lastUpdated: token.last_updated ? new Date(token.last_updated) : null,
             }));
+    }
+
+    async fetchHistoricalData(
+        coinGeckoId: string,
+        days: number,
+    ): Promise<MappedDataPoint[]> {
+        const url = `${this.coinGeckoApiBase}/coins/${coinGeckoId}/market_chart?vs_currency=usd&days=${days}`;
+        this.logger.log(`Fetching historical data for ${coinGeckoId}, ${days} days from ${url}`);
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.get<CoinGeckoChartData>(url, {
+                    headers: { 'Accept': 'application/json' }
+                })
+            );
+
+            if (response?.status !== 200 || !Array.isArray(response?.data?.prices)) {
+                this.logger.error(`Failed fetching historical data for ${coinGeckoId}. Status: ${response?.status}, Data: ${JSON.stringify(response?.data)}`);
+                throw new Error(`Invalid historical data from CoinGecko API for ${coinGeckoId}.`);
+            }
+
+            if (response.data.prices.length === 0) {
+                this.logger.warn(`Received empty prices array for ${coinGeckoId}, ${days} days.`);
+                return [];
+            }
+
+            this.logger.log(`Fetched ${response.data.prices.length} historical points for ${coinGeckoId}.`);
+
+            return response.data.prices.map(([timestamp, price]) => {
+                if (timestamp == null || price == null) {
+                    this.logger.warn(`Skipping invalid data point: [${timestamp}, ${price}] for ${coinGeckoId}`);
+                    return null;
+                }
+                return {
+                    date: new Date(timestamp),
+                    priceUSD: price,
+                };
+            }).filter((p): p is MappedDataPoint => p !== null);
+
+        } catch (error) {
+            const errorMessage = error?.response?.data || error?.message || error;
+            this.logger.error(`Error fetching/processing CoinGecko historical data for ${coinGeckoId}:`, errorMessage);
+            return [];
+        }
     }
 }

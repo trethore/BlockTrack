@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql'; // Ajoutez Mutation
+import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { TokenEntity } from '../entities/token.entity';
 import { GetAllTokensUseCase } from '../../../use-cases/get-all-tokens.use-case';

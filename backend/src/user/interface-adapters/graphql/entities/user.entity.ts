@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { GraphQLDateTime } from 'graphql-scalars'; // Use a specific scalar for Date/DateTime
+import { GraphQLDateTime } from 'graphql-scalars';
 
 @ObjectType({ description: 'Represents a user account' })
 export class UserEntity {

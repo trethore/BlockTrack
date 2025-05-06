@@ -62,16 +62,8 @@ model DataPoint {
   tokenId   String
   date      DateTime
   priceUSD  Float
-  frequency Frequency @default(DAILY)
 
   @@index([tokenId, date])
-}
-
-enum Frequency {
-  DAILY
-  WEEKLY
-  MONTHLY
-  YEARLY
 }
 
 model TokenUpdateLog {
