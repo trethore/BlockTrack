@@ -1,4 +1,6 @@
+import { AppConfig } from '../../config/app-config';
 import { Injectable, Inject, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ITokenRepository } from '../domain/ports/token.repository.interface';
 import { ITokenUpdateLogRepository } from '../domain/ports/token-update-log.repository.interface';
 import { TokenDataService } from '../domain/services/token-data.service';
@@ -7,7 +9,6 @@ import { Token } from '@generated/prisma';
 @Injectable()
 export class GetAllTokensUseCase {
   private readonly logger = new Logger(GetAllTokensUseCase.name);
-  private readonly REFRESH_INTERVAL_MS = 1 * 60 * 60 * 1000;
 
   constructor(
     @Inject(ITokenRepository)
@@ -16,7 +17,12 @@ export class GetAllTokensUseCase {
     private readonly tokenUpdateLogRepository: ITokenUpdateLogRepository,
     @Inject(TokenDataService)
     private readonly tokenDataService: TokenDataService,
+    private readonly configService: ConfigService, // +++
   ) { }
+
+  private get REFRESH_INTERVAL_MS(): number { // +++
+    return this.configService.get<AppConfig>('app')?.refreshIntervals?.allTokens ?? 1 * 60 * 60 * 1000;
+  }
 
   async execute(): Promise<Token[]> {
     this.logger.log('Executing GetAllTokensUseCase...');
@@ -31,10 +37,11 @@ export class GetAllTokensUseCase {
     const lastRefreshedAt = log?.lastRefreshedAt;
 
     let shouldRefresh = true;
+    const refreshInterval = this.REFRESH_INTERVAL_MS;
 
     if (lastRefreshedAt) {
       const timeSinceLastRefresh = now.getTime() - lastRefreshedAt.getTime();
-      shouldRefresh = timeSinceLastRefresh > this.REFRESH_INTERVAL_MS;
+      shouldRefresh = timeSinceLastRefresh > refreshInterval;
       this.logger.log(`Last token refresh check: ${lastRefreshedAt.toISOString()}. Time since: ${Math.round(timeSinceLastRefresh / 1000)}s. Refresh needed: ${shouldRefresh}`);
     } else {
       this.logger.log('No token refresh log found. Refresh needed.');
