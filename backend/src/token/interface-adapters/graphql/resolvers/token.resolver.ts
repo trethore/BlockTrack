@@ -1,5 +1,5 @@
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
+import { Resolver, Query, Mutation, Args, ID, ResolveField, Parent } from '@nestjs/graphql';
+import { UseGuards, Inject } from '@nestjs/common';
 import { TokenEntity } from '../entities/token.entity';
 import { GetAllTokensUseCase } from '../../../use-cases/get-all-tokens.use-case';
 import { GetTokenUseCase } from '../../../use-cases/get-token.use-case';
@@ -10,6 +10,8 @@ import { CurrentUser } from '../../../../infrastructure/auth/current-user.decora
 import { AddFavoriteTokenUseCase } from '../../../use-cases/add-favorite-token.use-case';
 import { RemoveFavoriteTokenUseCase } from '../../../use-cases/remove-favorite-token.use-case';
 import { FavoriteTokenInput } from '../dto/favorite-token.input';
+import { DataPointEntity } from '../entities/datapoint.entity';
+import { IDataPointRepository } from '../../../domain/ports/datapoint.repository.interface';
 
 @Resolver(() => TokenEntity)
 export class TokenResolver {
@@ -19,6 +21,8 @@ export class TokenResolver {
     private readonly getFavoriteTokensUseCase: GetFavoriteTokensUseCase,
     private readonly addFavoriteTokenUseCase: AddFavoriteTokenUseCase,
     private readonly removeFavoriteTokenUseCase: RemoveFavoriteTokenUseCase,
+    @Inject(IDataPointRepository)
+    private readonly dataPointRepository: IDataPointRepository,
   ) { }
 
   @Query(() => [TokenEntity], {
@@ -71,5 +75,13 @@ export class TokenResolver {
       userId: user.id,
       tokenId: input.tokenId,
     });
+  }
+
+  @ResolveField(() => [DataPointEntity], {
+    nullable: true
+  })
+  async dataPoints(@Parent() token: TokenEntity): Promise<DataPointEntity[]> {
+    console.log(`Resolving 'dataPoints' field for token: ${token.id} (${token.symbol})`);
+    return this.dataPointRepository.findByTokenId(token.id);
   }
 }

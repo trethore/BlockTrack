@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int, Float, ID } from '@nestjs/graphql';
 import { GraphQLBigInt, GraphQLDateTime } from 'graphql-scalars';
+import { DataPointEntity } from './datapoint.entity';
 @ObjectType({ description: 'Represents a cryptocurrency token' })
 export class TokenEntity {
   @Field(() => ID)
@@ -56,4 +57,6 @@ export class TokenEntity {
   @Field(() => GraphQLDateTime, { nullable: true })
   lastDataPointsUpdate?: Date | null;
 
+  @Field(() => [DataPointEntity], { nullable: true, description: 'Historical data points for the token.' })
+  dataPoints?: DataPointEntity[];
 }

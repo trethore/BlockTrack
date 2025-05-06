@@ -29,6 +29,7 @@ export class PrismaDataPointRepository implements IDataPointRepository {
             this.logger.log('Bulk create skipped: No data points provided.');
             return 0;
         }
+
         try {
             const createManyInput: Prisma.DataPointCreateManyInput[] = dataPoints.map(dp => ({
                 tokenId: dp.tokenId,
@@ -45,6 +46,21 @@ export class PrismaDataPointRepository implements IDataPointRepository {
         } catch (error) {
             this.logger.error(`Error bulk creating data points:`, error);
             throw new Error('Could not save new data points');
+        }
+    }
+
+    async findByTokenId(tokenId: string): Promise<DataPoint[]> {
+        this.logger.log(`Finding data points for token ID: ${tokenId}`);
+        try {
+            return await this.prisma.dataPoint.findMany({
+                where: { tokenId: tokenId },
+                orderBy: {
+                    date: 'asc',
+                },
+            });
+        } catch (error) {
+            this.logger.error(`Error finding data points for token ${tokenId}:`, error);
+            return [];
         }
     }
 }

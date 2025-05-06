@@ -18,6 +18,13 @@ input CreateUserInput {
   username: String!
 }
 
+"""Represents a historical data point for a token"""
+type DataPointEntity {
+  date: DateTime!
+  id: ID!
+  priceUSD: Float!
+}
+
 """
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -74,6 +81,9 @@ type Query {
 """Represents a cryptocurrency token"""
 type TokenEntity {
   circulatingSupply: BigInt
+
+  """Historical data points for the token."""
+  dataPoints: [DataPointEntity!]
   id: ID!
   lastDataPointsUpdate: DateTime
   lastUpdated: DateTime
