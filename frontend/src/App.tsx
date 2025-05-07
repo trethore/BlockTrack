@@ -6,6 +6,7 @@ import LandingPage from './pages/LandingPage.tsx';
 import LeaderboardPage from './pages/LeaderboardPage.tsx';
 import FavoritesPage from './pages/FavoritesPage.tsx';
 import AccountPage from './pages/AccountPage.tsx';
+import { Toaster } from './components/ui/sonner.tsx';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      <Toaster />
     </div>
   );
 }

@@ -12,6 +12,7 @@ import { IFavoriteRepository } from '../../../token/domain/ports/favorite.reposi
 import { JwtAuthGuard } from '../../../infrastructure/auth/jwt-auth.guard';
 import { CurrentUser } from '../../../infrastructure/auth/current-user.decorator';
 import { User } from '@generated/prisma';
+import { AuthPayload } from './entities/auth-payload.entity'; // Assure-toi que ce chemin est correct
 
 @Resolver(() => UserEntity)
 export class UserResolver {
@@ -23,12 +24,12 @@ export class UserResolver {
     @Inject(IFavoriteRepository) private readonly favoriteRepository: IFavoriteRepository,
   ) { }
 
-  @Mutation(() => UserEntity, { description: 'Creates a new user account' })
+  @Mutation(() => AuthPayload, { description: 'Creates a new user account and returns a JWT' })
   async createUser(
     @Args('createUserData') createUserData: CreateUserInput,
-  ): Promise<UserEntity> {
-    const user = await this.createUserUseCase.execute(createUserData);
-    return user;
+  ): Promise<AuthPayload> { // MODIFIÉ ICI le type de retour
+    const result = await this.createUserUseCase.execute(createUserData);
+    return result; // result contient maintenant { accessToken: '...' }
   }
 
   @UseGuards(JwtAuthGuard)

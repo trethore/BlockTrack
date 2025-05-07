@@ -48,8 +48,8 @@ type Mutation {
   """Adds a token to the authenticated user's favorites"""
   addFavoriteToken(input: FavoriteTokenInput!): TokenEntity!
 
-  """Creates a new user account"""
-  createUser(createUserData: CreateUserInput!): UserEntity!
+  """Creates a new user account and returns a JWT"""
+  createUser(createUserData: CreateUserInput!): AuthPayload!
 
   """Deletes the authenticated user profile"""
   deleteUser(id: ID!): ID!
