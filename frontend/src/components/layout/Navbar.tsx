@@ -1,8 +1,9 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { Button } from './../ui/button.tsx';
-import { useTheme } from './../theme-provider.tsx';
-import { Moon, Sun, Bitcoin } from 'lucide-react';
+import React from "react";
+import { Link, NavLink } from "react-router-dom";
+import { Moon, Sun } from "lucide-react";
+import { Button } from "@/components/ui/button.tsx";
+import { useTheme } from "@/components/theme-provider.tsx";
+import { Bitcoin } from 'lucide-react';
 
 const Navbar: React.FC = () => {
     const { theme, setTheme } = useTheme();
@@ -11,11 +12,15 @@ const Navbar: React.FC = () => {
         setTheme(theme === 'light' ? 'dark' : 'light');
     };
 
-    const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
-        `px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
-            ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground'
-            : 'text-muted-foreground hover:text-foreground'
-        }`;
+    const navLinkClasses = ({ isActive }: { isActive: boolean }) => {
+        const baseClasses = "px-3 py-2 rounded-md text-sm font-medium transition-colors";
+
+        if (isActive) {
+            return `${baseClasses} bg-primary/10 text-primary dark:bg-accent dark:text-accent-foreground`;
+        } else {
+            return `${baseClasses} text-muted-foreground hover:text-foreground dark:text-foreground/80 dark:hover:text-foreground`;
+        }
+    };
 
     const logoColor = "oklch(0.65 0.22 145)";
 
@@ -31,7 +36,7 @@ const Navbar: React.FC = () => {
                     </Link>
 
                     <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
-                        <NavLink to="/" className={navLinkClasses}>
+                        <NavLink to="/" className={navLinkClasses} end>
                             About
                         </NavLink>
                         <NavLink to="/leaderboard" className={navLinkClasses}>
@@ -45,7 +50,6 @@ const Navbar: React.FC = () => {
                         </NavLink>
                     </div>
 
-                    {/* Theme Toggle Button */}
                     <div className="flex items-center">
                         <Button
                             variant="ghost"
