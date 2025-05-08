@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, ApolloError } from '@apollo/client';
-import { GET_TOKENS_FOR_LEADERBOARD, GET_ME, ADD_FAVORITE_TOKEN, REMOVE_FAVORITE_TOKEN } from '../lib/apollo/queries.js';
-import { TokenLeaderboardData, TimePeriod, SortConfig, SortableTokenKey, SortDirection, DEFAULT_TIME_PERIOD, DEFAULT_SORT_KEY, DEFAULT_SORT_DIRECTION } from '../types/token.js';
-import TokenDataTable from '../components/leaderboard/TokenDataTable.js';
-import LeaderboardControls from '../components/leaderboard/LeaderboardControls.js';
+import { GET_TOKENS_FOR_LEADERBOARD, GET_ME, ADD_FAVORITE_TOKEN, REMOVE_FAVORITE_TOKEN } from '@lib/apollo/queries.js';
+import { TokenLeaderboardData, TimePeriod, SortConfig, SortableTokenKey, SortDirection, DEFAULT_TIME_PERIOD, DEFAULT_SORT_KEY, DEFAULT_SORT_DIRECTION } from '../types/token.ts';
+import TokenDataTable from '@/components/leaderboard/TokenDataTable.js';
+import LeaderboardControls from '@/components/leaderboard/LeaderboardControls.js';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert.js';
-import { parseBigInt } from '../lib/utils.js';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.js';
+import { parseBigInt } from '@/lib/utils.js';
 
 const ACCESS_TOKEN_KEY = 'AccessToken';
 
@@ -96,55 +96,39 @@ const LeaderboardPage: React.FC = () => {
         }
 
         processedTokens.sort((a, b) => {
-            let valA = a[sortConfig.key as keyof TokenLeaderboardData];
-            let valB = b[sortConfig.key as keyof TokenLeaderboardData];
+            let valA_raw = a[sortConfig.key as keyof TokenLeaderboardData];
+            let valB_raw = b[sortConfig.key as keyof TokenLeaderboardData];
 
-            if (sortConfig.key.startsWith('percentChange')) {
-                const getTimePeriodValue = (token: TokenLeaderboardData, periodKey: string): number | null => {
-                    return token[periodKey as keyof TokenLeaderboardData] as number | null;
-                };
-                valA = getTimePeriodValue(a, sortConfig.key);
-                valB = getTimePeriodValue(b, sortConfig.key);
-            }
+            const valA = typeof valA_raw === 'bigint' ? Number(valA_raw) : valA_raw;
+            const valB = typeof valB_raw === 'bigint' ? Number(valB_raw) : valB_raw;
 
+            const aIsNull = valA === null || valA === undefined;
+            const bIsNull = valB === null || valB === undefined;
 
-            if (valA === null || valA === undefined) return sortConfig.direction === 'asc' ? 1 : -1;
-            if (valB === null || valB === undefined) return sortConfig.direction === 'asc' ? -1 : 1;
+            if (aIsNull && bIsNull) return 0;
+            if (aIsNull) return 1;
+            if (bIsNull) return -1;
 
-            if (typeof valA === 'bigint' && typeof valB === 'bigint') {
-                valA = Number(valA);
-                valB = Number(valB);
-            } else if (typeof valA === 'string' && /^\d+$/.test(valA) && typeof valB === 'string' && /^\d+$/.test(valB)) {
-                try {
-                    valA = Number(parseBigInt(valA));
-                    valB = Number(parseBigInt(valB));
-                } catch {
-
+            let comparison = 0;
+            if (typeof valA === 'number' && typeof valB === 'number') {
+                comparison = valA - valB;
+            } else if (typeof valA === 'string' && typeof valB === 'string') {
+                if (sortConfig.key === 'name') {
+                    comparison = valA.localeCompare(valB, undefined, { sensitivity: 'base' });
+                } else if (sortConfig.key === 'symbol') {
+                    comparison = valA.localeCompare(valB, undefined, { sensitivity: 'base' });
+                } else {
+                    comparison = valA.localeCompare(valB);
                 }
             }
-
-
-            if (typeof valA === 'number' && typeof valB === 'number') {
-                return sortConfig.direction === 'asc' ? valA - valB : valB - valA;
-            }
-            if (typeof valA === 'string' && typeof valB === 'string') {
-                return sortConfig.direction === 'asc'
-                    ? valA.localeCompare(valB)
-                    : valB.localeCompare(valA);
-            }
-            return 0;
+            return sortConfig.direction === 'asc' ? comparison : -comparison;
         });
 
         return processedTokens;
     }, [allTokens, searchTerm, sortConfig]);
 
     const handleSortKeyChange = (key: SortableTokenKey) => {
-        if (sortConfig.key === key) {
-            setSortConfig({ key, direction: sortConfig.direction === 'asc' ? 'desc' : 'asc' });
-        } else {
-            const defaultDirection = (key === 'rank' || key === 'name') ? 'asc' : 'desc';
-            setSortConfig({ key, direction: defaultDirection });
-        }
+        setSortConfig(prev => ({ ...prev, key }));
     };
 
     const handleSortDirectionChange = (direction: SortDirection) => {

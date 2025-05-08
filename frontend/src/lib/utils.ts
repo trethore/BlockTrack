@@ -14,17 +14,20 @@ export function formatPrice(price: number | null | undefined): string {
     maximumFractionDigits: price < 1 ? 8 : 2,
   }).format(price);
 }
-
+// TODO: refractor this duplicated code
 export function formatMarketCap(cap: number | null | undefined): string {
   if (cap === null || cap === undefined) return 'N/A';
   if (cap >= 1_000_000_000_000) {
-    return `$${(cap / 1_000_000_000_000).toFixed(2)} T`;
+    return `$${(cap / 1_000_000_000_000).toFixed(2)}T`;
   }
   if (cap >= 1_000_000_000) {
-    return `$${(cap / 1_000_000_000).toFixed(2)} B`;
+    return `$${(cap / 1_000_000_000).toFixed(2)}B`;
   }
   if (cap >= 1_000_000) {
-    return `$${(cap / 1_000_000).toFixed(2)} M`;
+    return `$${(cap / 1_000_000).toFixed(2)}M`;
+  }
+  if (cap >= 1_000) {
+    return `$${(cap / 1_000).toFixed(2)}K`;
   }
   return `$${cap.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }
@@ -45,7 +48,28 @@ export function parseBigInt(value: string | number | null | undefined): bigint |
   }
 }
 
-export function formatSupply(supply: bigint | null | undefined): string {
+export function formatSupplyDetailed(supply: bigint | null | undefined): string {
   if (supply === null || supply === undefined) return 'N/A';
   return supply.toLocaleString();
+}
+
+
+export function formatSupply(supply: bigint | null | undefined): string {
+  if (supply === null || supply === undefined) return 'N/A';
+
+  const num = Number(supply);
+
+  if (num >= 1_000_000_000_000) {
+    return (num / 1_000_000_000_000).toLocaleString(undefined, { maximumFractionDigits: 2 }) + 'T';
+  }
+  if (num >= 1_000_000_000) {
+    return (num / 1_000_000_000).toLocaleString(undefined, { maximumFractionDigits: 2 }) + 'B';
+  }
+  if (num >= 1_000_000) {
+    return (num / 1_000_000).toLocaleString(undefined, { maximumFractionDigits: 2 }) + 'M';
+  }
+  if (num >= 10_000) {
+    return (num / 1_000).toLocaleString(undefined, { maximumFractionDigits: 1 }) + 'K';
+  }
+  return formatSupplyDetailed(supply);
 }

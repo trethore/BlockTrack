@@ -6,16 +6,16 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '../ui/table.js';
-import { Skeleton } from '../ui/skeleton.js';
-import { TokenLeaderboardData, TimePeriod } from '../../types/token.js';
-import { formatPrice, formatMarketCap, formatPercentage } from '../../lib/utils.js';
-import SupplyProgressBar from './SupplyProgressBar.js';
-import FavoriteButton from './FavoriteButton.js';
+} from '@/components/ui/table.tsx';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
+import { TokenLeaderboardData, TimePeriod } from '@/types/token.ts';
+import { formatPrice, formatMarketCap, formatPercentage } from '@lib/utils.ts';
+import SupplyProgressBar from '@/components/leaderboard/SupplyProgressBar.tsx';
+import FavoriteButton from '@/components/leaderboard/FavoriteButton.js';
 
 interface TokenDataTableProps {
     tokens: TokenLeaderboardData[];
-    isLoading: boolean; // For initial data loading
+    isLoading: boolean;
     selectedTimePeriod: TimePeriod;
     userFavorites: Set<string>;
     onFavoriteToggle: (tokenId: string) => void;
@@ -68,7 +68,7 @@ const TokenDataTable: React.FC<TokenDataTableProps> = ({
                         <TableHead className="w-[50px] text-center">#</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead className="text-right">Price</TableHead>
-                        <TableHead className="text-right">% Change ({selectedTimePeriod.toUpperCase()})</TableHead>
+                        <TableHead className="text-right">% ({selectedTimePeriod.toUpperCase()})</TableHead>
                         <TableHead className="text-right">Market Cap</TableHead>
                         <TableHead className="w-[150px] text-center">Circulating Supply</TableHead>
                         <TableHead className="w-[80px] text-center">Actions</TableHead>

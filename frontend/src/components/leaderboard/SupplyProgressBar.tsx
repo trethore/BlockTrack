@@ -1,12 +1,13 @@
 import React from 'react';
-import { Progress } from '../ui/progress.js';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip.js';
-import { parseBigInt, formatSupply } from '../../lib/utils.js';
+import { Progress } from '@/components/ui/progress.tsx';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip.tsx';
+import { parseBigInt, formatSupply, formatSupply as formatSupplyDetailed } from '@lib/utils.ts';
+import { Info } from 'lucide-react';
 
 interface SupplyProgressBarProps {
     circulatingSupplyStr: string | number | null | undefined;
     maxSupplyStr: string | number | null | undefined;
-    totalSupplyStr: string | number | null | undefined;
+    totalSupplyStr?: string | number | null | undefined;
     symbol: string;
 }
 
@@ -20,47 +21,71 @@ const SupplyProgressBar: React.FC<SupplyProgressBarProps> = ({
     const maxSupply = parseBigInt(maxSupplyStr);
     const totalSupply = parseBigInt(totalSupplyStr);
 
-    const effectiveMaxSupply = maxSupply ?? totalSupply;
-
     if (circulatingSupply === null) {
         return <span className="text-xs text-muted-foreground">N/A</span>;
     }
 
-    const formattedCirculating = formatSupply(circulatingSupply);
+    const formattedCirculatingDisplay = formatSupply(circulatingSupply);
+    const formattedCirculatingTooltip = formatSupplyDetailed(circulatingSupply);
 
-    if (effectiveMaxSupply === null || effectiveMaxSupply === 0n) {
+    if (maxSupply === null) {
         return (
             <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <div className="text-xs">{formattedCirculating} {symbol}</div>
+                        <div className="text-xs text-center flex items-center justify-center gap-1">
+                            <span>{formattedCirculatingDisplay} {symbol}</span>
+                        </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                        <p>Circulating Supply: {formattedCirculating} {symbol}</p>
-                        <p>Max/Total Supply: Not Available</p>
+                        <p>Circulating: {formattedCirculatingTooltip} {symbol}</p>
+                        <p>Max Supply: Infinite</p>
+                        {totalSupply !== null && <p>Total Supply: {formatSupplyDetailed(totalSupply)} {symbol}</p>}
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
         );
     }
 
-    const percentage = Number((circulatingSupply * 10000n / effectiveMaxSupply)) / 100;
-    const formattedMax = formatSupply(effectiveMaxSupply);
+    if (circulatingSupply === maxSupply) {
+        const formattedMaxTooltip = formatSupplyDetailed(maxSupply);
+        return (
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <div className="text-xs text-center text-green-500 flex items-center justify-center gap-1">
+                            <span>Fully Circulated</span>
+                            <Info className="h-3 w-3 opacity-70" />
+                        </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Circulating: {formattedCirculatingTooltip} {symbol}</p>
+                        <p>Max Supply: {formattedMaxTooltip} {symbol}</p>
+                        <p>All available tokens are in circulation.</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+        );
+    }
+
+    const percentage = maxSupply === 0n ? 0 : Number((circulatingSupply * 10000n / maxSupply)) / 100;
+    const formattedMaxDisplay = formatSupply(maxSupply);
+    const formattedMaxTooltip = formatSupplyDetailed(maxSupply);
 
     return (
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
                     <div className="w-full">
-                        <Progress value={percentage} className="h-2 mb-1" />
+                        {maxSupply > 0n && <Progress value={percentage} className="h-2 mb-1" />}
                         <div className="text-xs text-muted-foreground text-center">
-                            {formattedCirculating} / {formattedMax}
+                            {formattedCirculatingDisplay} / {formattedMaxDisplay}
                         </div>
                     </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>Circulating: {formattedCirculating} {symbol}</p>
-                    <p>{maxSupply ? 'Max Supply' : 'Total Supply'}: {formattedMax} {symbol}</p>
+                    <p>Circulating: {formattedCirculatingTooltip} {symbol}</p>
+                    <p>Max Supply: {formattedMaxTooltip} {symbol}</p>
                     <p>Percentage: {percentage.toFixed(2)}%</p>
                 </TooltipContent>
             </Tooltip>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Star, Loader2 } from 'lucide-react';
-import { Button } from '../ui/button.js';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip.js';
+import { Button } from '@/components/ui/button.tsx';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip.tsx';
 
 interface FavoriteButtonProps {
     tokenId: string;

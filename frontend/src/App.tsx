@@ -1,12 +1,12 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/layout/Navbar.tsx';
-import Footer from './components/layout/Footer.tsx'; // Import Footer
-import LandingPage from './pages/LandingPage.tsx';
-import LeaderboardPage from './pages/LeaderboardPage.tsx';
-import FavoritesPage from './pages/FavoritesPage.tsx';
-import AccountPage from './pages/AccountPage.tsx';
-import { Toaster } from './components/ui/sonner.tsx';
+import Navbar from '@/components/layout/Navbar.tsx';
+import Footer from '@/components/layout/Footer.tsx';
+import LandingPage from '@/pages/LandingPage.tsx';
+import LeaderboardPage from '@/pages/LeaderboardPage.tsx';
+import FavoritesPage from '@/pages/FavoritesPage.tsx';
+import AccountPage from '@/pages/AccountPage.tsx';
+import { Toaster } from '@/components/ui/sonner.tsx';
 
 function App() {
   return (

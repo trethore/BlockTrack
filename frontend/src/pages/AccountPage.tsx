@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
-import { GET_ME, IS_TOKEN_VALID } from '../lib/apollo/queries.ts';
-import LoginForm from '../components/auth/LoginForm.tsx';
-import RegisterForm from '../components/auth/RegisterForm.tsx';
-import UserProfile from '../components/auth/UserProfile.tsx';
-import { Button } from '../components/ui/button.tsx';
+import { GET_ME, IS_TOKEN_VALID } from '@lib/apollo/queries.ts';
+import LoginForm from '@/components/auth/LoginForm.tsx';
+import RegisterForm from '@/components/auth/RegisterForm.tsx';
+import UserProfile from '@/components/auth/UserProfile.tsx';
+import { Button } from '@/components/ui/button.tsx';
 import { Loader2 } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert.tsx';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
 
 const ACCESS_TOKEN_KEY = 'AccessToken';
 
