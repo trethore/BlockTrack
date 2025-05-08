@@ -19,10 +19,12 @@ interface TokenDataTableProps {
     isLoading: boolean;
     selectedTimePeriod: ChartTimeframe;
     userFavorites: Set<string>;
+    optimisticFavorites?: Set<string>;
     onFavoriteToggle: (tokenId: string) => void;
     favoriteMutationLoading: Record<string, boolean>;
     isAuthLoading: boolean;
     isAuthenticated: boolean;
+    showRank?: boolean;
 }
 
 const TokenDataTable: React.FC<TokenDataTableProps> = ({
@@ -30,10 +32,12 @@ const TokenDataTable: React.FC<TokenDataTableProps> = ({
     isLoading,
     selectedTimePeriod,
     userFavorites,
+    optimisticFavorites,
     onFavoriteToggle,
     favoriteMutationLoading,
     isAuthLoading,
     isAuthenticated,
+    showRank = true,
 }) => {
     const navigate = useNavigate();
 
@@ -43,83 +47,156 @@ const TokenDataTable: React.FC<TokenDataTableProps> = ({
 
     const getPercentChangeValue = (token: TokenLeaderboardData, period: ChartTimeframe): number | null => {
         switch (period) {
-            case '1h': return token.percentChange1h;
-            case '1d': return token.percentChange24h;
-            case '7d': return token.percentChange7d;
-            case '30d': return token.percentChange30d;
-            case '1y': return token.percentChange1y;
-            default: return null;
+            case '1h':
+                return token.percentChange1h;
+            case '1d':
+                return token.percentChange24h;
+            case '7d':
+                return token.percentChange7d;
+            case '30d':
+                return token.percentChange30d;
+            case '1y':
+                return token.percentChange1y;
+            default:
+                return null;
         }
     };
+
+    const columnCount = showRank ? 7 : 6;
 
     const renderSkeletons = (count: number) =>
         Array(count)
             .fill(0)
             .map((_, index) => (
                 <TableRow key={`skeleton-${index}`}>
-                    <TableCell><Skeleton className="h-5 w-8" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-32" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-20" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-16" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                    <TableCell className="w-[150px]"><Skeleton className="h-8 w-full" /></TableCell>
-                    <TableCell className="w-[60px]"><Skeleton className="h-8 w-8" /></TableCell>
+                    {showRank && (
+                        <TableCell className="text-center">
+                            <Skeleton className="h-5 w-8 mx-auto" />
+                        </TableCell>
+                    )}
+                    <TableCell>
+                        <Skeleton className="h-5 w-32" />
+                    </TableCell>
+                    <TableCell className="w-32 text-right">
+                        <Skeleton className="h-5 w-full" />
+                    </TableCell>
+                    <TableCell className="w-24 text-right">
+                        <Skeleton className="h-5 w-full" />
+                    </TableCell>
+                    <TableCell className="w-36 text-right">
+                        <Skeleton className="h-5 w-full" />
+                    </TableCell>
+                    <TableCell className="w-40 text-center">
+                        <Skeleton className="h-8 w-full" />
+                    </TableCell>
+                    <TableCell className="w-16 text-center">
+                        <Skeleton className="h-8 w-full" />
+                    </TableCell>
                 </TableRow>
             ));
 
     return (
         <div className="rounded-md border">
-            <Table>
+            <Table className="w-full table-fixed">
+                <colgroup>
+                    {showRank && <col className="w-14" />}
+                    <col />
+                    <col className="w-32" />
+                    <col className="w-24" />
+                    <col className="w-36" />
+                    <col className="w-40" />
+                    <col className="w-16" />
+                </colgroup>
+
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="w-[50px] text-center">#</TableHead>
+                        {showRank && <TableHead className="w-14 text-center">#</TableHead>}
                         <TableHead>Name</TableHead>
-                        <TableHead className="text-right">Price</TableHead>
-                        <TableHead className="text-right">% ({selectedTimePeriod.toUpperCase()})</TableHead>
-                        <TableHead className="text-right">Market Cap</TableHead>
-                        <TableHead className="w-[150px] text-center">Circulating Supply</TableHead>
-                        {/* Rename column, adjust width */}
-                        <TableHead className="w-[60px] text-center">Favorite</TableHead>
+                        <TableHead className="w-32 text-right">Price</TableHead>
+                        <TableHead className="w-24 text-right">% ({selectedTimePeriod.toUpperCase()})</TableHead>
+                        <TableHead className="w-36 text-right">Market Cap</TableHead>
+                        <TableHead className="w-40 text-center">Circulating Supply</TableHead>
+                        <TableHead className="w-16 text-center">Favorite</TableHead>
                     </TableRow>
                 </TableHeader>
+
                 <TableBody>
                     {isLoading ? (
                         renderSkeletons(10)
                     ) : tokens.length === 0 ? (
                         <TableRow>
-                            <TableCell colSpan={7} className="h-24 text-center">
-                                No tokens found.
+                            <TableCell colSpan={columnCount} className="h-24 text-center">
+                                {userFavorites.size > 0
+                                    ? 'No favorite tokens match the current filter.'
+                                    : 'No tokens found.'}
                             </TableCell>
                         </TableRow>
                     ) : (
                         tokens.map((token) => {
                             const percentChange = getPercentChangeValue(token, selectedTimePeriod);
-                            const isFavorite = userFavorites.has(token.id);
+
+                            const favSetForButton = optimisticFavorites ?? userFavorites;
+                            const isButtonFavorite = favSetForButton.has(token.id);
+                            const isRowSelected = userFavorites.has(token.id);
+
                             return (
                                 <TableRow
                                     key={token.id}
-                                    data-state={isFavorite ? "selected" : ""}
+                                    data-state={isRowSelected ? 'selected' : ''}
                                     onClick={() => handleRowClick(token.id)}
                                     className="cursor-pointer"
                                 >
-                                    <TableCell className="font-medium text-center">{token.rank ?? 'N/A'}</TableCell>
+                                    {showRank && (
+                                        <TableCell className="w-14 font-medium text-center">
+                                            {token.rank ?? 'N/A'}
+                                        </TableCell>
+                                    )}
+
                                     <TableCell>
                                         <div className="font-medium">{token.name}</div>
-                                        <div className="text-xs text-muted-foreground">{token.symbol.toUpperCase()}</div>
+                                        <div className="text-xs text-muted-foreground">
+                                            {token.symbol.toUpperCase()}
+                                        </div>
                                     </TableCell>
-                                    <TableCell className="text-right">{formatPrice(token.priceUSD)}</TableCell>
-                                    <TableCell className={`text-right ${percentChange === null ? '' : (percentChange >= 0 ? 'text-green-500' : 'text-red-500')}`}>
+
+                                    <TableCell className="w-32 text-right">
+                                        {formatPrice(token.priceUSD)}
+                                    </TableCell>
+
+                                    <TableCell
+                                        className={`w-24 text-right ${percentChange === null
+                                            ? ''
+                                            : percentChange >= 0
+                                                ? 'text-green-500'
+                                                : 'text-red-500'
+                                            }`}
+                                    >
                                         {formatPercentage(percentChange)}
                                     </TableCell>
-                                    <TableCell className="text-right">
+
+                                    <TableCell className="w-36 text-right">
                                         <div>{formatMarketCap(token.marketCapUsd)}</div>
-                                        {token.marketCapChange24h !== null && token.marketCapUsd !== null && token.marketCapUsd !== token.marketCapChange24h && (
-                                            <div className={`text-xs ${token.marketCapChange24h >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                                                {formatPercentage(token.marketCapChange24h / (token.marketCapUsd - token.marketCapChange24h) * 100, false)} 24h
-                                            </div>
-                                        )}
+                                        {token.marketCapChange24h !== null &&
+                                            token.marketCapUsd !== null &&
+                                            token.marketCapUsd - (token.marketCapChange24h ?? 0) !== 0 && (
+                                                <div
+                                                    className={`text-xs ${token.marketCapChange24h >= 0
+                                                        ? 'text-green-500'
+                                                        : 'text-red-500'
+                                                        }`}
+                                                >
+                                                    {formatPercentage(
+                                                        ((token.marketCapChange24h ?? 0) /
+                                                            (token.marketCapUsd - (token.marketCapChange24h ?? 0))) *
+                                                        100,
+                                                        false
+                                                    )}{' '}
+                                                    24h
+                                                </div>
+                                            )}
                                     </TableCell>
-                                    <TableCell className="w-[150px]">
+
+                                    <TableCell className="w-40 text-center">
                                         <SupplyProgressBar
                                             circulatingSupplyStr={token.circulatingSupply?.toString()}
                                             maxSupplyStr={token.maxSupply?.toString()}
@@ -127,13 +204,14 @@ const TokenDataTable: React.FC<TokenDataTableProps> = ({
                                             symbol={token.symbol.toUpperCase()}
                                         />
                                     </TableCell>
+
                                     <TableCell
-                                        className="text-center"
+                                        className="w-16 text-center"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <FavoriteButton
                                             tokenId={token.id}
-                                            isFavorite={isFavorite}
+                                            isFavorite={isButtonFavorite}
                                             onToggle={onFavoriteToggle}
                                             isLoading={favoriteMutationLoading[token.id] || false}
                                             isAuthLoading={isAuthLoading}

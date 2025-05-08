@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { ArrowUp, ArrowDown, X as XIcon } from 'lucide-react';
+import { ArrowUp, ArrowDown, X as XIcon, RefreshCcw } from 'lucide-react';
 import {
     ChartTimeframe,
     SortableTokenKey,
@@ -12,6 +12,7 @@ import {
 } from '@/types/token.ts';
 
 interface LeaderboardControlsProps {
+    title?: string;
     searchTerm: string;
     onSearchChange: (term: string) => void;
     sortConfig: { key: SortableTokenKey; direction: SortDirection };
@@ -19,22 +20,25 @@ interface LeaderboardControlsProps {
     onSortDirectionChange: (direction: SortDirection) => void;
     selectedTimePeriod: ChartTimeframe;
     onTimePeriodChange: (period: ChartTimeframe) => void;
+    onRefresh?: () => void;
+    isRefreshing?: boolean;
 }
 
-
 const SORTABLE_KEYS = [
+    { value: 'marketCapUsd', label: 'Market Cap' },
     { value: 'name', label: 'Name' },
     { value: 'symbol', label: 'Symbol' },
     { value: 'priceUSD', label: 'Price' },
-    { value: 'marketCapUsd', label: 'Market Cap' },
     { value: 'percentChange1h', label: '% 1h' },
     { value: 'percentChange24h', label: '% 24h' },
     { value: 'percentChange7d', label: '% 7d' },
     { value: 'percentChange30d', label: '% 30d' },
     { value: 'percentChange1y', label: '% 1y' },
-];
+] as const;
+
 
 const LeaderboardControls: React.FC<LeaderboardControlsProps> = ({
+    title = "Explore BlockTrack",
     searchTerm,
     onSearchChange,
     sortConfig,
@@ -42,13 +46,22 @@ const LeaderboardControls: React.FC<LeaderboardControlsProps> = ({
     onSortDirectionChange,
     selectedTimePeriod,
     onTimePeriodChange,
+    onRefresh,
+    isRefreshing
 }) => {
     const handleSortKeySelect = (value: string) => {
         const newSortKey = value as SortableTokenKey;
         onSortKeyChange(newSortKey);
+
         if (newSortKey.startsWith('percentChange')) {
-            const period = newSortKey.replace('percentChange', '').toLowerCase() as ChartTimeframe;
-            if (CHART_TIMEFRAMES.includes(period)) {
+            let period: ChartTimeframe | null = null;
+            if (newSortKey === 'percentChange1h') period = '1h';
+            else if (newSortKey === 'percentChange24h') period = '1d'; // Map 24h to 1d
+            else if (newSortKey === 'percentChange7d') period = '7d';
+            else if (newSortKey === 'percentChange30d') period = '30d';
+            else if (newSortKey === 'percentChange1y') period = '1y';
+
+            if (period && CHART_TIMEFRAMES.includes(period)) {
                 onTimePeriodChange(period);
             }
         }
@@ -57,7 +70,7 @@ const LeaderboardControls: React.FC<LeaderboardControlsProps> = ({
     return (
         <div className="mb-6 space-y-4">
             <div className="text-center mb-4">
-                <h2 className="text-3xl font-semibold tracking-tight">Explore BlockTrack</h2>
+                <h2 className="text-3xl font-semibold tracking-tight">{title}</h2>
             </div>
             <div className="relative max-w-lg mx-auto">
                 <Input
@@ -108,6 +121,19 @@ const LeaderboardControls: React.FC<LeaderboardControlsProps> = ({
                 </div>
 
                 <div className="flex items-center gap-2">
+                    {/* Refresh Button */}
+                    {onRefresh && (
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={onRefresh}
+                            disabled={isRefreshing}
+                            aria-label="Refresh favorites"
+                        >
+                            <RefreshCcw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                        </Button>
+                    )}
+                    {/* Period Toggle */}
                     <span className="text-sm text-muted-foreground hidden sm:inline">Period:</span>
                     <ToggleGroup
                         type="single"
