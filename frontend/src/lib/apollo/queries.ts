@@ -11,12 +11,9 @@ export const GET_ME = gql`
       email
       createdAt
       updatedAt
-      # Si tu veux les favoris ici, décommente
-      # favorites {
-      #   id
-      #   symbol
-      #   name
-      # }
+      favorites {
+        id
+      }
     }
   }
 `;
@@ -41,6 +38,44 @@ export const DELETE_USER = gql`
 export const IS_TOKEN_VALID = gql`
   query IsTokenValid {
     isTokenValid
+  }
+`;
+
+export const GET_TOKENS_FOR_LEADERBOARD = gql`
+  query GetTokensForLeaderboard {
+    tokens {
+      id
+      rank
+      name
+      symbol
+      priceUSD
+      marketCapUsd
+      marketCapChange24h
+      circulatingSupply
+      totalSupply
+      maxSupply
+      percentChange1h
+      percentChange24h
+      percentChange7d
+      percentChange30d
+      percentChange1y
+    }
+  }
+`;
+
+export const ADD_FAVORITE_TOKEN = gql`
+  mutation AddFavoriteToken($tokenId: ID!) {
+    addFavoriteToken(input: { tokenId: $tokenId }) {
+      id
+    }
+  }
+`;
+
+export const REMOVE_FAVORITE_TOKEN = gql`
+  mutation RemoveFavoriteToken($tokenId: ID!) {
+    removeFavoriteToken(input: { tokenId: $tokenId }) {
+      id
+    }
   }
 `;
 
