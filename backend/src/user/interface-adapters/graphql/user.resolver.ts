@@ -41,7 +41,6 @@ export class UserResolver {
 
   @ResolveField(() => [TokenEntity], { name: 'favorites', nullable: 'itemsAndList' })
   async getFavorites(@Parent() user: UserEntity): Promise<TokenEntity[]> {
-    console.log(`Resolving favorites for user: ${user.id} (${user.username})`);
     const favoriteTokens = await this.favoriteRepository.findTokensByUserId(user.id);
     return favoriteTokens;
   }

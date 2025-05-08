@@ -68,7 +68,6 @@ export class TokenResolver {
     nullable: true
   })
   async dataPoints(@Parent() token: TokenEntity): Promise<DataPointEntity[]> {
-    console.log(`Resolving 'dataPoints' field for token: ${token.id} (${token.symbol})`);
     return this.dataPointRepository.findByTokenId(token.id);
   }
 }
