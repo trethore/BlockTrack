@@ -94,3 +94,30 @@ export const CREATE_USER = gql`
     }
   }
 `;
+export const GET_TOKEN_DETAILS = gql`
+  query GetTokenDetails($id: ID!) {
+    token(input: { id: $id }) {
+      id
+      rank
+      name
+      symbol
+      priceUSD
+      marketCapUsd
+      marketCapChange24h
+      circulatingSupply
+      totalSupply
+      maxSupply
+      percentChange1h
+      percentChange24h
+      percentChange7d
+      percentChange30d
+      percentChange1y
+      lastUpdated
+      dataPoints {
+        id
+        date
+        priceUSD
+      }
+    }
+  }
+`;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, ApolloError } from '@apollo/client';
 import { GET_TOKENS_FOR_LEADERBOARD, GET_ME, ADD_FAVORITE_TOKEN, REMOVE_FAVORITE_TOKEN } from '@lib/apollo/queries.js';
-import { TokenLeaderboardData, TimePeriod, SortConfig, SortableTokenKey, SortDirection, DEFAULT_TIME_PERIOD, DEFAULT_SORT_KEY, DEFAULT_SORT_DIRECTION } from '../types/token.ts';
+import { TokenLeaderboardData, SortConfig, SortableTokenKey, SortDirection, DEFAULT_CHART_TIMEFRAME, CHART_TIMEFRAMES, ChartTimeframe, DEFAULT_SORT_DIRECTION } from '@/types/token.ts';
 import TokenDataTable from '@/components/leaderboard/TokenDataTable.js';
 import LeaderboardControls from '@/components/leaderboard/LeaderboardControls.js';
 import { Loader2 } from 'lucide-react';
@@ -11,11 +11,13 @@ import { parseBigInt } from '@/lib/utils.js';
 
 const ACCESS_TOKEN_KEY = 'AccessToken';
 
+const DEFAULT_SORT_KEY: SortableTokenKey = 'marketCapUsd';
+
 const LeaderboardPage: React.FC = () => {
     const [allTokens, setAllTokens] = useState<TokenLeaderboardData[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<SortConfig>({ key: DEFAULT_SORT_KEY, direction: DEFAULT_SORT_DIRECTION });
-    const [selectedTimePeriod, setSelectedTimePeriod] = useState<TimePeriod>(DEFAULT_TIME_PERIOD);
+    const [selectedTimePeriod, setSelectedTimePeriod] = useState<ChartTimeframe>(DEFAULT_CHART_TIMEFRAME);
     const [userFavorites, setUserFavorites] = useState<Set<string>>(new Set());
     const [favoriteMutationLoading, setFavoriteMutationLoading] = useState<Record<string, boolean>>({});
 
@@ -113,13 +115,7 @@ const LeaderboardPage: React.FC = () => {
             if (typeof valA === 'number' && typeof valB === 'number') {
                 comparison = valA - valB;
             } else if (typeof valA === 'string' && typeof valB === 'string') {
-                if (sortConfig.key === 'name') {
-                    comparison = valA.localeCompare(valB, undefined, { sensitivity: 'base' });
-                } else if (sortConfig.key === 'symbol') {
-                    comparison = valA.localeCompare(valB, undefined, { sensitivity: 'base' });
-                } else {
-                    comparison = valA.localeCompare(valB);
-                }
+                comparison = valA.localeCompare(valB, undefined, { sensitivity: 'base' });
             }
             return sortConfig.direction === 'asc' ? comparison : -comparison;
         });

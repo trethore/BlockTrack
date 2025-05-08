@@ -6,6 +6,7 @@ import LandingPage from '@/pages/LandingPage.tsx';
 import LeaderboardPage from '@/pages/LeaderboardPage.tsx';
 import FavoritesPage from '@/pages/FavoritesPage.tsx';
 import AccountPage from '@/pages/AccountPage.tsx';
+import TokenDetailsPage from '@/pages/TokenDetailsPage.tsx';
 import { Toaster } from '@/components/ui/sonner.tsx';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="/token/:tokenId" element={<TokenDetailsPage />} />
           <Route path="/account" element={<AccountPage />} />
         </Routes>
       </main>

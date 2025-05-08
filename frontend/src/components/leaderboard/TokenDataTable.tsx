@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     Table,
     TableBody,
@@ -8,15 +9,15 @@ import {
     TableRow,
 } from '@/components/ui/table.tsx';
 import { Skeleton } from '@/components/ui/skeleton.tsx';
-import { TokenLeaderboardData, TimePeriod } from '@/types/token.ts';
+import { TokenLeaderboardData, ChartTimeframe } from '@/types/token.ts';
 import { formatPrice, formatMarketCap, formatPercentage } from '@lib/utils.ts';
 import SupplyProgressBar from '@/components/leaderboard/SupplyProgressBar.tsx';
-import FavoriteButton from '@/components/leaderboard/FavoriteButton.js';
+import FavoriteButton from '@/components/leaderboard/FavoriteButton.tsx';
 
 interface TokenDataTableProps {
     tokens: TokenLeaderboardData[];
     isLoading: boolean;
-    selectedTimePeriod: TimePeriod;
+    selectedTimePeriod: ChartTimeframe;
     userFavorites: Set<string>;
     onFavoriteToggle: (tokenId: string) => void;
     favoriteMutationLoading: Record<string, boolean>;
@@ -34,10 +35,16 @@ const TokenDataTable: React.FC<TokenDataTableProps> = ({
     isAuthLoading,
     isAuthenticated,
 }) => {
-    const getPercentChangeValue = (token: TokenLeaderboardData, period: TimePeriod): number | null => {
+    const navigate = useNavigate();
+
+    const handleRowClick = (tokenId: string) => {
+        navigate(`/token/${tokenId}`);
+    };
+
+    const getPercentChangeValue = (token: TokenLeaderboardData, period: ChartTimeframe): number | null => {
         switch (period) {
             case '1h': return token.percentChange1h;
-            case '24h': return token.percentChange24h;
+            case '1d': return token.percentChange24h;
             case '7d': return token.percentChange7d;
             case '30d': return token.percentChange30d;
             case '1y': return token.percentChange1y;
@@ -56,7 +63,7 @@ const TokenDataTable: React.FC<TokenDataTableProps> = ({
                     <TableCell><Skeleton className="h-5 w-16" /></TableCell>
                     <TableCell><Skeleton className="h-5 w-24" /></TableCell>
                     <TableCell className="w-[150px]"><Skeleton className="h-8 w-full" /></TableCell>
-                    <TableCell><Skeleton className="h-8 w-8" /></TableCell>
+                    <TableCell className="w-[60px]"><Skeleton className="h-8 w-8" /></TableCell>
                 </TableRow>
             ));
 
@@ -71,7 +78,8 @@ const TokenDataTable: React.FC<TokenDataTableProps> = ({
                         <TableHead className="text-right">% ({selectedTimePeriod.toUpperCase()})</TableHead>
                         <TableHead className="text-right">Market Cap</TableHead>
                         <TableHead className="w-[150px] text-center">Circulating Supply</TableHead>
-                        <TableHead className="w-[80px] text-center">Actions</TableHead>
+                        {/* Rename column, adjust width */}
+                        <TableHead className="w-[60px] text-center">Favorite</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -88,8 +96,13 @@ const TokenDataTable: React.FC<TokenDataTableProps> = ({
                             const percentChange = getPercentChangeValue(token, selectedTimePeriod);
                             const isFavorite = userFavorites.has(token.id);
                             return (
-                                <TableRow key={token.id} data-state={isFavorite ? "selected" : ""}>
-                                    <TableCell className="font-medium text-center">{token.rank}</TableCell>
+                                <TableRow
+                                    key={token.id}
+                                    data-state={isFavorite ? "selected" : ""}
+                                    onClick={() => handleRowClick(token.id)}
+                                    className="cursor-pointer"
+                                >
+                                    <TableCell className="font-medium text-center">{token.rank ?? 'N/A'}</TableCell>
                                     <TableCell>
                                         <div className="font-medium">{token.name}</div>
                                         <div className="text-xs text-muted-foreground">{token.symbol.toUpperCase()}</div>
@@ -100,9 +113,9 @@ const TokenDataTable: React.FC<TokenDataTableProps> = ({
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div>{formatMarketCap(token.marketCapUsd)}</div>
-                                        {token.marketCapChange24h !== null && (
+                                        {token.marketCapChange24h !== null && token.marketCapUsd !== null && token.marketCapUsd !== token.marketCapChange24h && (
                                             <div className={`text-xs ${token.marketCapChange24h >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                                                {formatPercentage(token.marketCapChange24h / (token.marketCapUsd || 1) * 100, false)} 24h
+                                                {formatPercentage(token.marketCapChange24h / (token.marketCapUsd - token.marketCapChange24h) * 100, false)} 24h
                                             </div>
                                         )}
                                     </TableCell>
@@ -114,7 +127,10 @@ const TokenDataTable: React.FC<TokenDataTableProps> = ({
                                             symbol={token.symbol.toUpperCase()}
                                         />
                                     </TableCell>
-                                    <TableCell className="text-center">
+                                    <TableCell
+                                        className="text-center"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
                                         <FavoriteButton
                                             tokenId={token.id}
                                             isFavorite={isFavorite}

@@ -5,9 +5,10 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { ArrowUp, ArrowDown, X as XIcon } from 'lucide-react';
 import {
-    TimePeriod,
+    ChartTimeframe,
     SortableTokenKey,
     SortDirection,
+    CHART_TIMEFRAMES,
 } from '@/types/token.ts';
 
 interface LeaderboardControlsProps {
@@ -16,11 +17,10 @@ interface LeaderboardControlsProps {
     sortConfig: { key: SortableTokenKey; direction: SortDirection };
     onSortKeyChange: (key: SortableTokenKey) => void;
     onSortDirectionChange: (direction: SortDirection) => void;
-    selectedTimePeriod: TimePeriod;
-    onTimePeriodChange: (period: TimePeriod) => void;
+    selectedTimePeriod: ChartTimeframe;
+    onTimePeriodChange: (period: ChartTimeframe) => void;
 }
 
-const TIME_PERIODS: TimePeriod[] = ['1h', '24h', '7d', '30d', '1y'];
 
 const SORTABLE_KEYS = [
     { value: 'name', label: 'Name' },
@@ -47,8 +47,8 @@ const LeaderboardControls: React.FC<LeaderboardControlsProps> = ({
         const newSortKey = value as SortableTokenKey;
         onSortKeyChange(newSortKey);
         if (newSortKey.startsWith('percentChange')) {
-            const period = newSortKey.replace('percentChange', '').toLowerCase() as TimePeriod;
-            if (TIME_PERIODS.includes(period)) {
+            const period = newSortKey.replace('percentChange', '').toLowerCase() as ChartTimeframe;
+            if (CHART_TIMEFRAMES.includes(period)) {
                 onTimePeriodChange(period);
             }
         }
@@ -112,12 +112,12 @@ const LeaderboardControls: React.FC<LeaderboardControlsProps> = ({
                     <ToggleGroup
                         type="single"
                         value={selectedTimePeriod}
-                        onValueChange={(value: TimePeriod) => {
+                        onValueChange={(value: ChartTimeframe) => {
                             if (value) onTimePeriodChange(value);
                         }}
                         className="flex-wrap justify-start sm:justify-end"
                     >
-                        {TIME_PERIODS.map(period => (
+                        {CHART_TIMEFRAMES.map(period => (
                             <ToggleGroupItem key={period} value={period} aria-label={`Select ${period} period`}>
                                 {period.toUpperCase()}
                             </ToggleGroupItem>
