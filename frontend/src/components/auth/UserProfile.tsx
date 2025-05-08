@@ -50,13 +50,26 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout, onAccountDele
     const [isDeleting, setIsDeleting] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
+    useEffect(() => {
+        if (!isSaving) {
+            setFormData({
+                username: user.username,
+                email: user.email,
+                password: '',
+                confirmPassword: '',
+            });
+            setValidationErrors({});
+            setApiError(null);
+        }
+    }, [user.updatedAt, isSaving]);
+
     const isDirty = useMemo(() => {
         return (
             formData.username !== user.username ||
             formData.email !== user.email ||
             formData.password !== ''
         );
-    }, [formData, user]);
+    }, [formData, user.username, user.email]);
 
     useEffect(() => {
         const errors: Record<string, string | null> = {};
@@ -96,7 +109,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout, onAccountDele
     const [updateUserMutation] = useMutation(UPDATE_USER, {
         onCompleted: (data) => {
             setIsSaving(false);
-            setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }));
             toast.success(`Your profile (${data.updateUser.username}) has been successfully updated.`);
             refetchUserData();
         },
@@ -233,7 +245,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout, onAccountDele
                         {validationErrors.password && <p className="text-xs text-destructive mt-1">{validationErrors.password}</p>}
                     </div>
 
-                    {/* Confirm New Password */}
                     <div className="space-y-1">
                         <Label htmlFor="profile-confirmPassword">Confirm New Password</Label>
                         <Input
@@ -285,7 +296,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout, onAccountDele
                             </AlertDialogContent>
                         </AlertDialog>
 
-                        <Button onClick={onLogout} variant="destructive" className="w-full sm:w-auto sm:ml-auto">
+                        <Button onClick={onLogout} variant="destructive" className="w-full sm:w-auto sm:ml-auto min-w-[8rem]">
                             Logout
                         </Button>
                     </div>
