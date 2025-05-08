@@ -7,9 +7,9 @@ import LeaderboardControls from '../components/leaderboard/LeaderboardControls.j
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert.js';
-import { parseBigInt } from '../lib/utils.js'; // Import parseBigInt
+import { parseBigInt } from '../lib/utils.js';
 
-const ACCESS_TOKEN_KEY = 'AccessToken'; // Assuming this is consistent with AccountPage
+const ACCESS_TOKEN_KEY = 'AccessToken';
 
 const LeaderboardPage: React.FC = () => {
     const [allTokens, setAllTokens] = useState<TokenLeaderboardData[]>([]);
@@ -21,7 +21,7 @@ const LeaderboardPage: React.FC = () => {
 
     const { loading: tokensLoading, error: tokensError, data: tokensData } = useQuery(GET_TOKENS_FOR_LEADERBOARD);
     const { loading: userLoading, error: userError, data: userData, refetch: refetchUser } = useQuery(GET_ME, {
-        skip: !localStorage.getItem(ACCESS_TOKEN_KEY), // Skip if no token
+        skip: !localStorage.getItem(ACCESS_TOKEN_KEY),
         fetchPolicy: 'network-only',
     });
 
@@ -34,10 +34,9 @@ const LeaderboardPage: React.FC = () => {
 
     useEffect(() => {
         if (tokensData?.tokens) {
-            // Ensure BigInts are handled correctly if they come as strings or numbers from GQL
             const processedTokens = tokensData.tokens.map((token: any) => ({
                 ...token,
-                circulatingSupply: token.circulatingSupply, // keep as is, will be parsed in component
+                circulatingSupply: token.circulatingSupply,
                 totalSupply: token.totalSupply,
                 maxSupply: token.maxSupply,
             })) as TokenLeaderboardData[];
@@ -49,7 +48,6 @@ const LeaderboardPage: React.FC = () => {
         if (userData?.me?.favorites) {
             setUserFavorites(new Set(userData.me.favorites.map((fav: { id: string }) => fav.id)));
         } else if (!userLoading && !userData?.me && localStorage.getItem(ACCESS_TOKEN_KEY)) {
-            // If token exists but no user data (e.g., invalid token), clear local favorites
             setUserFavorites(new Set());
         }
     }, [userData, userLoading]);
@@ -71,14 +69,14 @@ const LeaderboardPage: React.FC = () => {
         } else {
             optimisticFavorites.add(tokenId);
         }
-        setUserFavorites(optimisticFavorites); // Optimistic update
+        setUserFavorites(optimisticFavorites);
 
         try {
             await mutation({ variables: { tokenId } });
             toast.success(`Token ${isCurrentlyFavorite ? 'removed from' : 'added to'} favorites!`);
-            await refetchUser(); // Refetch user data to get the latest favorites
+            await refetchUser();
         } catch (error: any) {
-            setUserFavorites(userFavorites); // Revert optimistic update on error
+            setUserFavorites(userFavorites);
             toast.error(`Failed to ${isCurrentlyFavorite ? 'remove from' : 'add to'} favorites: ${error.message}`);
             console.error("Favorite toggle error:", error);
         } finally {
@@ -101,7 +99,6 @@ const LeaderboardPage: React.FC = () => {
             let valA = a[sortConfig.key as keyof TokenLeaderboardData];
             let valB = b[sortConfig.key as keyof TokenLeaderboardData];
 
-            // Handle percent change sorting specifically if needed
             if (sortConfig.key.startsWith('percentChange')) {
                 const getTimePeriodValue = (token: TokenLeaderboardData, periodKey: string): number | null => {
                     return token[periodKey as keyof TokenLeaderboardData] as number | null;
@@ -111,21 +108,19 @@ const LeaderboardPage: React.FC = () => {
             }
 
 
-            // Handle nulls: nulls go last when ascending, first when descending
             if (valA === null || valA === undefined) return sortConfig.direction === 'asc' ? 1 : -1;
             if (valB === null || valB === undefined) return sortConfig.direction === 'asc' ? -1 : 1;
 
-            // For BigInts, convert to Number for comparison if they are not null
             if (typeof valA === 'bigint' && typeof valB === 'bigint') {
                 valA = Number(valA);
                 valB = Number(valB);
             } else if (typeof valA === 'string' && /^\d+$/.test(valA) && typeof valB === 'string' && /^\d+$/.test(valB)) {
-                // If they are string representations of numbers (like BigInts from GQL sometimes)
-                // This shouldn't be an issue if parseBigInt is used upstream or values are numbers
                 try {
                     valA = Number(parseBigInt(valA));
                     valB = Number(parseBigInt(valB));
-                } catch { /* ignore, proceed as string */ }
+                } catch {
+
+                }
             }
 
 
@@ -144,11 +139,9 @@ const LeaderboardPage: React.FC = () => {
     }, [allTokens, searchTerm, sortConfig]);
 
     const handleSortKeyChange = (key: SortableTokenKey) => {
-        // If it's the same key, toggle direction, otherwise set to default for that key
         if (sortConfig.key === key) {
             setSortConfig({ key, direction: sortConfig.direction === 'asc' ? 'desc' : 'asc' });
         } else {
-            // Default sort for rank is asc, for most others desc
             const defaultDirection = (key === 'rank' || key === 'name') ? 'asc' : 'desc';
             setSortConfig({ key, direction: defaultDirection });
         }
@@ -169,7 +162,7 @@ const LeaderboardPage: React.FC = () => {
             </div>
         );
     }
-    if (userError && isAuthenticated) { // Only show user error if they were supposed to be authenticated
+    if (userError && isAuthenticated) {
         toast.error(`Error loading user favorites: ${userError.message}`);
     }
 

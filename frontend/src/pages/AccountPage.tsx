@@ -6,7 +6,7 @@ import LoginForm from '../components/auth/LoginForm.tsx';
 import RegisterForm from '../components/auth/RegisterForm.tsx';
 import UserProfile from '../components/auth/UserProfile.tsx';
 import { Button } from '../components/ui/button.tsx';
-import { Loader2 } from 'lucide-react'; // Pour l'icône de chargement
+import { Loader2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert.tsx';
 
 const ACCESS_TOKEN_KEY = 'AccessToken';

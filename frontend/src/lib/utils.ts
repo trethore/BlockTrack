@@ -11,7 +11,7 @@ export function formatPrice(price: number | null | undefined): string {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2,
-    maximumFractionDigits: price < 1 ? 8 : 2, // Show more digits for small prices
+    maximumFractionDigits: price < 1 ? 8 : 2,
   }).format(price);
 }
 
@@ -35,11 +35,10 @@ export function formatPercentage(value: number | null | undefined, addPlusSign =
   return addPlusSign && value > 0 ? `+${formatted}` : formatted;
 }
 
-// Helper to convert BigInt string/number from GraphQL to actual BigInt or null
 export function parseBigInt(value: string | number | null | undefined): bigint | null {
   if (value === null || value === undefined) return null;
   try {
-    return BigInt(String(value).split('.')[0]); // Ensure it's an integer string before BigInt conversion
+    return BigInt(String(value).split('.')[0]);
   } catch (e) {
     console.warn(`Could not parse BigInt from value: ${value}`);
     return null;

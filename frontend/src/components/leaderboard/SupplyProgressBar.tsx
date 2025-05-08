@@ -20,7 +20,7 @@ const SupplyProgressBar: React.FC<SupplyProgressBarProps> = ({
     const maxSupply = parseBigInt(maxSupplyStr);
     const totalSupply = parseBigInt(totalSupplyStr);
 
-    const effectiveMaxSupply = maxSupply ?? totalSupply; // Use totalSupply if maxSupply is not defined
+    const effectiveMaxSupply = maxSupply ?? totalSupply;
 
     if (circulatingSupply === null) {
         return <span className="text-xs text-muted-foreground">N/A</span>;

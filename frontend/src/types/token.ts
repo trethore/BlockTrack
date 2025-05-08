@@ -6,9 +6,9 @@ export interface TokenLeaderboardData {
     priceUSD: number;
     marketCapUsd: number | null;
     marketCapChange24h: number | null;
-    circulatingSupply: bigint | null; // Prisma returns BigInt as string/number, handle appropriately
-    totalSupply: bigint | null;       // Prisma returns BigInt as string/number
-    maxSupply: bigint | null;         // Prisma returns BigInt as string/number
+    circulatingSupply: bigint | null;
+    totalSupply: bigint | null;
+    maxSupply: bigint | null;
     percentChange1h: number | null;
     percentChange24h: number | null;
     percentChange7d: number | null;
@@ -35,7 +35,7 @@ export const SORTABLE_KEYS: { value: SortableTokenKey; label: string }[] = [
 export const DEFAULT_SORT_KEY: SortableTokenKey = 'marketCapUsd';
 
 export type SortDirection = 'asc' | 'desc';
-export const DEFAULT_SORT_DIRECTION: SortDirection = 'asc'; // Market cap typically desc, rank asc. For leaderboard, default to rank asc.
+export const DEFAULT_SORT_DIRECTION: SortDirection = 'desc';
 
 export interface SortConfig {
     key: SortableTokenKey;
