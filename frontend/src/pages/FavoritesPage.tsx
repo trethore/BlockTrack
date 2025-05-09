@@ -3,7 +3,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, NetworkStatus, ApolloError as ApolloErrorType } from '@apollo/client';
 import { GraphQLFormattedError } from 'graphql';
-import { GET_ME, GET_TOKENS_FOR_LEADERBOARD, REMOVE_FAVORITE_TOKEN } from '@/lib/apollo/queries.ts';
+import { GET_ME, REMOVE_FAVORITE_TOKEN } from '@/lib/apollo/queries.ts';
+import { useCachedLeaderboard } from '@/lib/hooks/useCachedLeaderboard.ts';
 import { TokenLeaderboardData, SortConfig, SortableTokenKey, SortDirection, DEFAULT_SORT_DIRECTION, ChartTimeframe, DEFAULT_CHART_TIMEFRAME } from '@/types/token.ts';
 import LeaderboardControls from '@/components/leaderboard/LeaderboardControls.tsx';
 import TokenDataTable from '@/components/leaderboard/TokenDataTable.tsx';
@@ -32,10 +33,12 @@ const FavoritesPage: React.FC = () => {
         notifyOnNetworkStatusChange: true,
     });
 
-    const { loading: tokensLoading, error: tokensError, data: tokensData, refetch: refetchTokens, networkStatus: tokensNetworkStatus } = useQuery(GET_TOKENS_FOR_LEADERBOARD, {
-        fetchPolicy: 'cache-and-network',
-        notifyOnNetworkStatusChange: true,
-    });
+    const {
+        tokens: leaderboardApiTokens,
+        loading: tokensLoading, // Ce loading concerne le leaderboard
+        error: tokensError,
+        refetchLeaderboard
+    } = useCachedLeaderboard();
 
     const [removeFavoriteTokenMutation] = useMutation(REMOVE_FAVORITE_TOKEN);
 
@@ -44,8 +47,9 @@ const FavoritesPage: React.FC = () => {
 
     // --- Effects ---
     useEffect(() => {
-        if (tokensData?.tokens) {
-            const processedTokens = tokensData.tokens.map((token: any) => ({
+        if (leaderboardApiTokens) {
+            const processedTokens = leaderboardApiTokens.map((token: any) => ({
+                // ... votre logique de processing existante ...
                 ...token,
                 circulatingSupply: token.circulatingSupply,
                 totalSupply: token.totalSupply,
@@ -53,7 +57,7 @@ const FavoritesPage: React.FC = () => {
             })) as TokenLeaderboardData[];
             setAllTokens(processedTokens);
         }
-    }, [tokensData]);
+    }, [leaderboardApiTokens]);
 
     useEffect(() => {
         if (userData?.me?.favorites) {
@@ -122,12 +126,12 @@ const FavoritesPage: React.FC = () => {
     };
 
     const handleRefresh = () => {
-        toast.info("Refreshing favorites...");
-        refetchUser();
-        refetchTokens();
+        toast.info("Refreshing data...");
+        refetchUser(); // Rafraîchit les favoris de l'utilisateur
+        refetchLeaderboard(); // Rafraîchit les données du leaderboard (passera par la logique de cache)
     }
 
-    const isRefreshing = tokensNetworkStatus === NetworkStatus.refetch || userNetworkStatus === NetworkStatus.refetch;
+    const isRefreshing = tokensLoading || userNetworkStatus === NetworkStatus.refetch;
 
     const filteredAndSortedTokens = useMemo(() => {
         let processedTokens = [...displayedFavoriteTokens];
@@ -166,7 +170,9 @@ const FavoritesPage: React.FC = () => {
         return processedTokens;
     }, [displayedFavoriteTokens, searchTerm, sortConfig]);
 
-    if ((userLoading && !userData) || (tokensLoading && allTokens.length === 0)) {
+    const overallLoading = (userLoading && !userData) || (tokensLoading && (!allTokens || allTokens.length === 0));
+
+    if (overallLoading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)] text-center p-4">
                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -196,7 +202,7 @@ const FavoritesPage: React.FC = () => {
                     <AlertTitle>Error loading token data</AlertTitle>
                     <AlertDescription>{tokensError.message}</AlertDescription>
                 </Alert>
-                <Button onClick={() => refetchTokens()} className="mt-4">Try Again</Button>
+                <Button onClick={() => refetchLeaderboard()} className="mt-4">Try Again</Button>
             </div>
         );
     }
@@ -235,7 +241,9 @@ const FavoritesPage: React.FC = () => {
             />
             <TokenDataTable
                 tokens={filteredAndSortedTokens}
-                isLoading={userLoading && tokensLoading && displayedFavoriteTokens.length === 0}
+                // Le isLoading de TokenDataTable devrait refléter le chargement des données spécifiques à cette table.
+                // Si displayedFavoriteTokens est vide parce que allTokens ou userFavoritesSet ne sont pas encore prêts.
+                isLoading={(tokensLoading && (!allTokens || allTokens.length === 0)) || (userLoading && userFavoritesSet.size === 0 && isAuthenticated)}
                 selectedTimePeriod={selectedTimePeriod}
                 userFavorites={userFavoritesSet}
                 optimisticFavorites={optimisticFavoritesSet}

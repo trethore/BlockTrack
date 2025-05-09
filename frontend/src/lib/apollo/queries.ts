@@ -24,14 +24,14 @@ export const UPDATE_USER = gql`
       id
       username
       email
-      updatedAt # Demander updatedAt pour confirmer la mise à jour
+      updatedAt
     }
   }
 `;
 
 export const DELETE_USER = gql`
   mutation DeleteUser($id: ID!) {
-    deleteUser(id: $id) # Renvoie l'ID de l'utilisateur supprimé
+    deleteUser(id: $id)
   }
 `;
 

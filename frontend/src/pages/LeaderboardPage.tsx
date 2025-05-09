@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, ApolloError } from '@apollo/client';
-import { GET_TOKENS_FOR_LEADERBOARD, GET_ME, ADD_FAVORITE_TOKEN, REMOVE_FAVORITE_TOKEN } from '@lib/apollo/queries.js';
+import { GET_ME, ADD_FAVORITE_TOKEN, REMOVE_FAVORITE_TOKEN } from '@lib/apollo/queries.js';
+import { useCachedLeaderboard } from '@/lib/hooks/useCachedLeaderboard.ts';
 import { TokenLeaderboardData, SortConfig, SortableTokenKey, SortDirection, DEFAULT_CHART_TIMEFRAME, CHART_TIMEFRAMES, ChartTimeframe, DEFAULT_SORT_DIRECTION } from '@/types/token.ts';
 import TokenDataTable from '@/components/leaderboard/TokenDataTable.js';
 import LeaderboardControls from '@/components/leaderboard/LeaderboardControls.js';
@@ -21,7 +22,12 @@ const LeaderboardPage: React.FC = () => {
     const [userFavorites, setUserFavorites] = useState<Set<string>>(new Set());
     const [favoriteMutationLoading, setFavoriteMutationLoading] = useState<Record<string, boolean>>({});
 
-    const { loading: tokensLoading, error: tokensError, data: tokensData } = useQuery(GET_TOKENS_FOR_LEADERBOARD);
+    const {
+        tokens: leaderboardApiTokens, // Renommez pour éviter confusion avec `allTokens`
+        loading: tokensLoading,
+        error: tokensError,
+        refetchLeaderboard // Vous pouvez l'utiliser pour un bouton de rafraîchissement manuel
+    } = useCachedLeaderboard();
     const { loading: userLoading, error: userError, data: userData, refetch: refetchUser } = useQuery(GET_ME, {
         skip: !localStorage.getItem(ACCESS_TOKEN_KEY),
         fetchPolicy: 'network-only',
@@ -35,16 +41,17 @@ const LeaderboardPage: React.FC = () => {
 
 
     useEffect(() => {
-        if (tokensData?.tokens) {
-            const processedTokens = tokensData.tokens.map((token: any) => ({
+        if (leaderboardApiTokens) {
+            const processedTokens = leaderboardApiTokens.map((token: any) => ({
+                // ... votre logique de processing existante ...
                 ...token,
-                circulatingSupply: token.circulatingSupply,
+                circulatingSupply: token.circulatingSupply, // Assurez-vous que parseBigInt est bien géré si nécessaire
                 totalSupply: token.totalSupply,
                 maxSupply: token.maxSupply,
             })) as TokenLeaderboardData[];
             setAllTokens(processedTokens);
         }
-    }, [tokensData]);
+    }, [leaderboardApiTokens]);
 
     useEffect(() => {
         if (userData?.me?.favorites) {
@@ -157,10 +164,13 @@ const LeaderboardPage: React.FC = () => {
                 onSortDirectionChange={handleSortDirectionChange}
                 selectedTimePeriod={selectedTimePeriod}
                 onTimePeriodChange={setSelectedTimePeriod}
+            // Optionnel: ajouter un bouton refresh qui appelle refetchLeaderboard
+            // onRefresh={refetchLeaderboard}
+            // isRefreshing={tokensLoading} // tokensLoading sera true pendant le refetch
             />
             <TokenDataTable
                 tokens={filteredAndSortedTokens}
-                isLoading={tokensLoading && allTokens.length === 0}
+                isLoading={tokensLoading && (!allTokens || allTokens.length === 0)}
                 selectedTimePeriod={selectedTimePeriod}
                 userFavorites={userFavorites}
                 onFavoriteToggle={handleFavoriteToggle}

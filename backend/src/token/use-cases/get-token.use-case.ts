@@ -135,8 +135,8 @@ export class GetTokenUseCase {
 
         const deletedCount = await this.dataPointRepository.deleteAllDataPointsByTokenId(token.id);
         this.logger.log(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Deleted ${deletedCount} old data points.`);
-        this.logger.log(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Fetching 365-day data for CoinGecko ID '${coinGeckoId}'...`);
-        const mappedPoints = await this.tokenDataService.fetchHistoricalData(coinGeckoId, 365);
+        this.logger.log(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Fetching comprehensive historical data for CoinGecko ID '${coinGeckoId}'...`);
+        const mappedPoints = await this.tokenDataService.fetchComprehensiveHistoricalData(coinGeckoId); // MODIFIÉ ICI
 
         if (mappedPoints.length > 0) {
           const newDataPoints: CreateDataPointInput[] = mappedPoints.map(point => ({
@@ -148,13 +148,19 @@ export class GetTokenUseCase {
           const createdCount = await this.dataPointRepository.bulkCreate(newDataPoints);
           this.logger.log(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Bulk insert completed. ${createdCount} new data points created.`);
         } else {
-          this.logger.warn(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: No new data points fetched or prepared for insertion.`);
+          this.logger.warn(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: No new data points fetched or prepared for insertion after comprehensive fetch. Last data points update timestamp will NOT be updated.`); // ADDED LOG MESSAGE
         }
-        await this.tokenRepository.update(token.id, { lastDataPointsUpdate: now });
 
-        this.logger.log(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Data points refresh process finished successfully.`);
+        // Only update the timestamp if data points were successfully fetched and inserted
+        if (mappedPoints.length > 0) { // ADDED THIS CHECK
+          await this.tokenRepository.update(token.id, { lastDataPointsUpdate: now });
+        }
+
+
+        this.logger.log(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Data points refresh process finished.`); // Adjusted log message
       } catch (error) {
         this.logger.error(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Failed during data points refresh process:`, error);
+        // The timestamp is not updated in case of error, which is the desired behavior.
       }
     } else {
       this.logger.log(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Data points are recent enough. Skipping refresh.`);
