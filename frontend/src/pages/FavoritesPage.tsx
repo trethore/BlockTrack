@@ -1,4 +1,3 @@
-// src/pages/FavoritesPage.tsx
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, NetworkStatus, ApolloError as ApolloErrorType } from '@apollo/client';
@@ -22,7 +21,6 @@ const FavoritesPage: React.FC = () => {
     const [allTokens, setAllTokens] = useState<TokenLeaderboardData[]>([]);
     const [displayedFavoriteTokens, setDisplayedFavoriteTokens] = useState<TokenLeaderboardData[]>([]);
     const [userFavoritesSet, setUserFavoritesSet] = useState<Set<string>>(new Set());
-    // TODO: implement optimistic updates for favorites might be better for user experience
     const [optimisticFavoritesSet, setOptimisticFavoritesSet] = useState<Set<string>>(new Set());
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<SortConfig>({ key: DEFAULT_FAV_SORT_KEY, direction: DEFAULT_SORT_DIRECTION });
@@ -37,7 +35,7 @@ const FavoritesPage: React.FC = () => {
 
     const {
         tokens: leaderboardApiTokens,
-        loading: tokensLoading, // Ce loading concerne le leaderboard
+        loading: tokensLoading,
         error: tokensError,
         refetchLeaderboard
     } = useCachedLeaderboard();
@@ -47,11 +45,9 @@ const FavoritesPage: React.FC = () => {
     const isAuthenticated = !!userData?.me && !!localStorage.getItem(ACCESS_TOKEN_KEY);
     const isAuthLoading = userLoading && userNetworkStatus !== NetworkStatus.ready && userNetworkStatus !== NetworkStatus.error;
 
-    // --- Effects ---
     useEffect(() => {
         if (leaderboardApiTokens) {
             const processedTokens = leaderboardApiTokens.map((token: any) => ({
-                // ... votre logique de processing existante ...
                 ...token,
                 circulatingSupply: token.circulatingSupply,
                 totalSupply: token.totalSupply,
@@ -79,7 +75,7 @@ const FavoritesPage: React.FC = () => {
         } else {
             setDisplayedFavoriteTokens([]);
         }
-    }, [allTokens, userFavoritesSet]); // Depends on actual set
+    }, [allTokens, userFavoritesSet]);
 
     const handleRemoveFavorite = async (tokenId: string) => {
         if (!isAuthenticated || isAuthLoading) {
@@ -101,7 +97,7 @@ const FavoritesPage: React.FC = () => {
             await refetchUser();
 
         } catch (error: any) {
-            const apolloError = error as ApolloErrorType; // Type assertion
+            const apolloError = error as ApolloErrorType;
             let errorMessage = "Failed to remove from favorites.";
             if (apolloError.message) {
                 errorMessage = apolloError.message;
@@ -129,8 +125,8 @@ const FavoritesPage: React.FC = () => {
 
     const handleRefresh = () => {
         toast.info("Refreshing data...");
-        refetchUser(); // Rafraîchit les favoris de l'utilisateur
-        refetchLeaderboard(); // Rafraîchit les données du leaderboard (passera par la logique de cache)
+        refetchUser();
+        refetchLeaderboard();
     }
 
     const isRefreshing = tokensLoading || userNetworkStatus === NetworkStatus.refetch;
@@ -220,8 +216,6 @@ const FavoritesPage: React.FC = () => {
             />
             <TokenDataTable
                 tokens={filteredAndSortedTokens}
-                // Le isLoading de TokenDataTable devrait refléter le chargement des données spécifiques à cette table.
-                // Si displayedFavoriteTokens est vide parce que allTokens ou userFavoritesSet ne sont pas encore prêts.
                 isLoading={(tokensLoading && (!allTokens || allTokens.length === 0)) || (userLoading && userFavoritesSet.size === 0 && isAuthenticated)}
                 selectedTimePeriod={selectedTimePeriod}
                 userFavorites={userFavoritesSet}

@@ -23,7 +23,7 @@ import { RemoveFavoriteTokenUseCase } from './use-cases/remove-favorite-token.us
 import { TokenDataService } from './domain/services/token-data.service';
 
 import { TokenResolver } from './interface-adapters/graphql/resolvers/token.resolver';
-import { DataPointLoader } from './infrastructure/graphql/dataloaders/datapoint.loader'; // Importer le DataLoader
+import { DataPointLoader } from './infrastructure/graphql/dataloaders/datapoint.loader';
 
 @Module({
   imports: [

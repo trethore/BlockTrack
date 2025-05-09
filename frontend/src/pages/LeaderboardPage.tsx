@@ -23,10 +23,9 @@ const LeaderboardPage: React.FC = () => {
     const [favoriteMutationLoading, setFavoriteMutationLoading] = useState<Record<string, boolean>>({});
 
     const {
-        tokens: leaderboardApiTokens, // Renommez pour éviter confusion avec `allTokens`
+        tokens: leaderboardApiTokens,
         loading: tokensLoading,
         error: tokensError,
-        refetchLeaderboard // Vous pouvez l'utiliser pour un bouton de rafraîchissement manuel
     } = useCachedLeaderboard();
     const { loading: userLoading, error: userError, data: userData, refetch: refetchUser } = useQuery(GET_ME, {
         skip: !localStorage.getItem(ACCESS_TOKEN_KEY),
@@ -43,9 +42,8 @@ const LeaderboardPage: React.FC = () => {
     useEffect(() => {
         if (leaderboardApiTokens) {
             const processedTokens = leaderboardApiTokens.map((token: any) => ({
-                // ... votre logique de processing existante ...
                 ...token,
-                circulatingSupply: token.circulatingSupply, // Assurez-vous que parseBigInt est bien géré si nécessaire
+                circulatingSupply: token.circulatingSupply,
                 totalSupply: token.totalSupply,
                 maxSupply: token.maxSupply,
             })) as TokenLeaderboardData[];
@@ -141,9 +139,6 @@ const LeaderboardPage: React.FC = () => {
                 onSortDirectionChange={handleSortDirectionChange}
                 selectedTimePeriod={selectedTimePeriod}
                 onTimePeriodChange={setSelectedTimePeriod}
-            // Optionnel: ajouter un bouton refresh qui appelle refetchLeaderboard
-            // onRefresh={refetchLeaderboard}
-            // isRefreshing={tokensLoading} // tokensLoading sera true pendant le refetch
             />
             <TokenDataTable
                 tokens={filteredAndSortedTokens}

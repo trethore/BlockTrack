@@ -148,7 +148,7 @@ export class GetTokenUseCase {
           const createdCount = await this.dataPointRepository.bulkCreate(newDataPoints);
           this.logger.log(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Bulk insert completed. ${createdCount} new data points created.`);
         } else {
-          this.logger.warn(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: No new data points fetched or prepared for insertion after comprehensive fetch. Last data points update timestamp will NOT be updated.`); // ADDED LOG MESSAGE
+          this.logger.warn(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: No new data points fetched or prepared for insertion after comprehensive fetch. Last data points update timestamp will NOT be updated.`);
         }
 
         if (mappedPoints.length > 0) {

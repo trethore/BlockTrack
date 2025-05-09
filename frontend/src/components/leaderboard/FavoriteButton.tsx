@@ -21,7 +21,7 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
     isAuthenticated,
 }) => {
     const handleToggle = (e: React.MouseEvent) => {
-        e.stopPropagation(); // Prevent row click if any
+        e.stopPropagation();
         if (!isAuthenticated || isAuthLoading || isLoading) return;
         onToggle(tokenId);
     };

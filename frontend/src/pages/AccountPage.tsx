@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
-import { GET_ME, IS_TOKEN_VALID } from '@/lib/apollo/queries.ts'; // Assuming queries are here
+import { GET_ME, IS_TOKEN_VALID } from '@/lib/apollo/queries.ts';
 import LoginForm from '@/components/auth/LoginForm.tsx';
 import RegisterForm from '@/components/auth/RegisterForm.tsx';
 import UserProfile from '@/components/auth/UserProfile.tsx';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { Loader2 } from 'lucide-react'; // Assuming lucide-react is installed
+import { Loader2 } from 'lucide-react';
+import { ACCESS_TOKEN_KEY } from '@/lib/constants.ts';
 
 import { User } from '../types/user.ts';
-
-const ACCESS_TOKEN_KEY = 'accessToken';
 
 const AccountPage: React.FC = () => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -34,14 +33,14 @@ const AccountPage: React.FC = () => {
         onError: (error) => handleAuthError('Session expired or invalid. Please log in again.', error),
         onCompleted: (data) => {
             if (data && data.isTokenValid) {
-                fetchMe(); // Déclenchera le fetch des données utilisateur
+                fetchMe();
             } else {
                 handleAuthError('Session token is no longer valid. Please log in.');
             }
         }
     });
 
-    const [fetchMe, { loading: loadingMe }] = useLazyQuery<{ me: User }>(GET_ME, { // loadingMe est géré par authStatus
+    const [fetchMe, { loading: loadingMe }] = useLazyQuery<{ me: User }>(GET_ME, {
         fetchPolicy: 'network-only',
         onCompleted: (data) => {
             if (data && data.me) {
@@ -66,21 +65,21 @@ const AccountPage: React.FC = () => {
     useEffect(() => {
         const token = localStorage.getItem(ACCESS_TOKEN_KEY);
         if (token) {
-            setAuthStatus('loading'); // Indique qu'on vérifie le token
+            setAuthStatus('loading');
             checkTokenValidity();
         } else {
             setAuthStatus('unauthenticated');
             setCurrentUser(null);
         }
-    }, [checkTokenValidity]); // fetchMe n'est pas une dépendance ici car il est appelé conditionnellement
+    }, [checkTokenValidity]);
 
     const handleLoginSuccess = (token: string) => {
         localStorage.setItem(ACCESS_TOKEN_KEY, token);
-        setAuthStatus('loading'); // On va re-fetch 'me'
+        setAuthStatus('loading');
         fetchMe();
     };
 
-    const handleRegisterSuccess = (token: string) => { // Similaire à login
+    const handleRegisterSuccess = (token: string) => {
         localStorage.setItem(ACCESS_TOKEN_KEY, token);
         setAuthStatus('loading');
         fetchMe();
@@ -92,8 +91,8 @@ const AccountPage: React.FC = () => {
         setAuthStatus('unauthenticated');
         setShowLogin(true);
         setAuthErrorMessage(null);
-        if (!isLogout) navigate('/'); // Redirige vers la landing page après suppression
-        else navigate('/account'); // Reste sur la page de compte pour se reconnecter
+        if (!isLogout) navigate('/');
+        else navigate('/account');
     };
 
     if (authStatus === 'loading') {
@@ -126,9 +125,9 @@ const AccountPage: React.FC = () => {
                     user={currentUser}
                     onLogout={() => handleAccountAction(true)}
                     onAccountDeleted={() => handleAccountAction(false)}
-                    refetchUserData={fetchMe} // fetchMe est stable, pas besoin de useCallback
+                    refetchUserData={fetchMe}
                 />
-            ) : ( // 'unauthenticated'
+            ) : (
                 showLogin ? (
                     <LoginForm onLoginSuccess={handleLoginSuccess} switchToRegister={() => setShowLogin(false)} />
                 ) : (

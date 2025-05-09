@@ -17,10 +17,10 @@ export class GetAllTokensUseCase {
     private readonly tokenUpdateLogRepository: ITokenUpdateLogRepository,
     @Inject(TokenDataService)
     private readonly tokenDataService: TokenDataService,
-    private readonly configService: ConfigService, // +++
+    private readonly configService: ConfigService,
   ) { }
 
-  private get REFRESH_INTERVAL_MS(): number { // +++
+  private get REFRESH_INTERVAL_MS(): number {
     return this.configService.get<AppConfig>('app')?.refreshIntervals?.allTokens ?? 1 * 60 * 60 * 1000;
   }
 

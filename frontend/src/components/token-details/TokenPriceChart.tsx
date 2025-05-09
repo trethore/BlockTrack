@@ -28,7 +28,7 @@ const TokenPriceChart: React.FC<TokenPriceChartProps> = ({ data, isLoading }) =>
     const chartData = data;
 
     if (!chartData || chartData.length === 0) {
-        return <div className="h-[300px] w-full border rounded-md flex items-center justify-center text-muted-foreground">Please refresh, the distance API is having issues</div>; // MODIFIED THIS LINE
+        return <div className="h-[300px] w-full border rounded-md flex items-center justify-center text-muted-foreground">Please refresh, the distance API is having issues</div>;
     }
 
     const greenColor = "hsl(142.1 76.2% 36.3%)";

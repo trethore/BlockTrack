@@ -254,7 +254,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout, onAccountDele
                             placeholder="Confirm new password if entered above"
                             value={formData.confirmPassword}
                             onChange={handleInputChange}
-                            disabled={!formData.password} // Désactivé si le champ password est vide
+                            disabled={!formData.password}
                             aria-invalid={!!validationErrors.confirmPassword}
                             className={validationErrors.confirmPassword ? 'border-destructive focus-visible:ring-destructive/40' : ''}
                         />
