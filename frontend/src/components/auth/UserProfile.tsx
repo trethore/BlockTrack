@@ -163,14 +163,14 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout, onAccountDele
         deleteUserMutation({ variables: { id: user.id } });
     };
 
-    const getStatusIcon = () => {
+    const getStatusTextAndIcon = () => {
         switch (saveStatus) {
-            case 'saving': return <Loader2 className="h-4 w-4 animate-spin" />;
-            case 'invalid': return <X className="h-4 w-4 text-destructive" />;
-            case 'dirty': return <Save className="h-4 w-4 text-green-500" />;
+            case 'saving': return <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>;
+            case 'invalid': return <><X className="mr-2 h-4 w-4" /> Errors</>;
+            case 'dirty': return <><Save className="mr-2 h-4 w-4" /> Save </>;
             case 'idle':
             default:
-                return <Save className="h-4 w-4 text-muted-foreground opacity-50" />;
+                return <><Save className="mr-2 h-4 w-4 opacity-50" /> Save</>;
         }
     };
 
@@ -178,20 +178,24 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout, onAccountDele
         <div className="w-full max-w-md space-y-6">
             <Card>
                 <CardHeader>
-                    <div className="flex justify-between items-start">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                         <div>
                             <CardTitle>Welcome, {user.username}!</CardTitle>
                             <CardDescription>Edit your account details below.</CardDescription>
                         </div>
                         <Button
-                            variant="ghost"
-                            size="icon"
+                            variant="default"
+                            size="default"
                             onClick={handleSave}
                             disabled={saveStatus === 'idle' || saveStatus === 'saving' || saveStatus === 'invalid'}
                             aria-label="Save changes"
-                            className={saveStatus === 'invalid' ? 'text-destructive hover:text-destructive' : (saveStatus === 'dirty' ? 'text-blue-500 hover:text-blue-700' : '')}
+                            className={
+                                `w-full sm:w-auto ${saveStatus === 'invalid' ? 'border-destructive text-destructive bg-black-100' :
+                                    saveStatus === 'dirty' ? 'bg-green-700 hover:bg-green-600 text-white' :
+                                        saveStatus === 'idle' ? 'opacity-60 cursor-not-allowed' : ''
+                                }`}
                         >
-                            {getStatusIcon()}
+                            {getStatusTextAndIcon()}
                         </Button>
                     </div>
                 </CardHeader>

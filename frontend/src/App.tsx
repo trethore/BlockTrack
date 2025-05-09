@@ -8,6 +8,7 @@ import LeaderboardPage from '@/pages/LeaderboardPage.tsx';
 import FavoritesPage from '@/pages/FavoritesPage.tsx';
 import AccountPage from '@/pages/AccountPage.tsx';
 import TokenDetailsPage from '@/pages/TokenDetailsPage.tsx';
+import NotFoundPage from '@/pages/NotFoundPage.tsx'; // Importer la nouvelle page
 import { Toaster } from '@/components/ui/sonner.tsx';
 
 function App() {
@@ -22,6 +23,8 @@ function App() {
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/token/:tokenId" element={<TokenDetailsPage />} />
           <Route path="/account" element={<AccountPage />} />
+          {/* Route 404 - doit être la dernière */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
       <Footer />
