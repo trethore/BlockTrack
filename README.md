@@ -1,7 +1,5 @@
 # BlockTrack
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 <p align="center">
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19"/>
   <img src="https://img.shields.io/badge/NestJS-%23E0234E.svg?logo=nestjs&logoColor=white" alt="NestJS"/>
@@ -78,35 +76,6 @@ The project follows Uncle Bob's Clean Architecture principles to promote separat
 *   **Frameworks & Drivers Layer:** This is the outermost layer, generally composed of frameworks and tools suchs as the Database (Prisma, SQLite), Web Framework (NestJS, React), UI, etc.
     *   *Backend example:* NestJS framework, Prisma client, Apollo Server.
     *   *Frontend example:* React library, Vite, TailwindCSS.
-
-## 📁 Project Structure
-
-
-BlockTrack/
-├── backend/
-│ ├── prisma/ # Prisma schema, migrations, seed script
-│ ├── src/
-│ │ ├── app.module.ts # Root NestJS module
-│ │ ├── main.ts # Application entry point
-│ │ ├── config/ # Application configuration
-│ │ ├── infrastructure/ # Repositories, auth services, GraphQL dataloaders
-│ │ ├── token/ # Token feature module (domain, use-cases, adapters)
-│ │ └── user/ # User feature module (domain, use-cases, adapters)
-│ ├── .env.example # Example environment variables for backend
-│ └── package.json
-│
-└── frontend/
-├── public/ # Static assets
-├── src/
-│ ├── App.tsx # Main React application component
-│ ├── main.tsx # React DOM entry point, providers
-│ ├── assets/ # Images, SVGs etc.
-│ ├── components/ # Reusable UI components (auth, layout, ui primitives)
-│ ├── lib/ # Utilities, Apollo client, constants, custom hooks
-│ ├── pages/ # Route-level components
-│ └── types/ # TypeScript type definitions
-├── .env.example # Example environment variables for frontend
-└── package.json
 
 ## 🚀 Getting Started
 
@@ -281,8 +250,4 @@ This project is licensed under the **MIT License**. See the [LICENSE.md](LICENSE
 *   Token data and market information are powered by the [CoinGecko API](https://www.coingecko.com/en/api).
 *   UI components are inspired by [Shadcn/ui](https://ui.shadcn.com/).
 *   Built with the excellent NestJS and React ecosystems.
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-IGNORE_WHEN_COPYING_END
+*   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
