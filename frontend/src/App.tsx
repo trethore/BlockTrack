@@ -23,7 +23,6 @@ function App() {
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/token/:tokenId" element={<TokenDetailsPage />} />
           <Route path="/account" element={<AccountPage />} />
-          {/* Route 404 - doit être la dernière */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

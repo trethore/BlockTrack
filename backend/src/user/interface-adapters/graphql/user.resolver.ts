@@ -24,11 +24,6 @@ export class UserResolver {
     @Inject(IFavoriteRepository) private readonly favoriteRepository: IFavoriteRepository,
   ) { }
 
-  /**
-   * Creates a new user account and returns a JWT.
-   * @param createUserData - The input data for creating a user.
-   * @returns The authentication payload containing the user and JWT.
-   */
   @Mutation(() => AuthPayload, { description: 'Creates a new user account and returns a JWT' })
   async createUser(
     @Args('createUserData') createUserData: CreateUserInput,

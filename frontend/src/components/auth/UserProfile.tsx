@@ -270,7 +270,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout, onAccountDele
                         <p className="text-sm text-muted-foreground">{new Date(user.createdAt).toLocaleDateString()}</p>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-2 pt-4">
                         <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                             <AlertDialogTrigger asChild>
