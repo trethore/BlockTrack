@@ -1,9 +1,9 @@
-import { AppConfig } from '../../config/app-config';
+import { AppConfig } from '@/src/config/app-config';
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ITokenRepository } from '../domain/ports/token.repository.interface';
-import { ITokenUpdateLogRepository } from '../domain/ports/token-update-log.repository.interface';
-import { TokenDataService } from '../domain/services/token-data.service';
+import { ITokenRepository } from '@/src/token/domain/ports/token.repository.interface';
+import { ITokenUpdateLogRepository } from '@/src/token/domain/ports/token-update-log.repository.interface';
+import { TokenDataService } from '@/src/token/domain/services/token-data.service';
 import { Token } from '@generated/prisma';
 
 @Injectable()

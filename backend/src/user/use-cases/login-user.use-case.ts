@@ -1,6 +1,6 @@
 import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
-import { IUserRepository } from '../domain/ports/user.repository.interface';
-import { IAuthService } from '../domain/ports/auth.service.interface';
+import { IUserRepository } from '@/src/user/domain/ports/user.repository.interface';
+import { IAuthService } from '@/src/user/domain/ports/auth.service.interface';
 
 interface LoginUserCommand {
   emailOrUsername: string;
@@ -18,7 +18,7 @@ export class LoginUserUseCase {
     private readonly userRepository: IUserRepository,
     @Inject(IAuthService)
     private readonly authService: IAuthService,
-  ) {}
+  ) { }
 
   async execute(command: LoginUserCommand): Promise<LoginResult> {
     const user =

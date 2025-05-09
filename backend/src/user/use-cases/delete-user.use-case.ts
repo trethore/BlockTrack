@@ -1,5 +1,5 @@
 import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
-import { IUserRepository } from '../domain/ports/user.repository.interface';
+import { IUserRepository } from '@/src/user/domain/ports/user.repository.interface';
 
 interface DeleteUserCommand {
   userIdToDelete: string;
@@ -11,7 +11,7 @@ export class DeleteUserUseCase {
   constructor(
     @Inject(IUserRepository)
     private readonly userRepository: IUserRepository,
-  ) {}
+  ) { }
 
   async execute(command: DeleteUserCommand): Promise<void> {
     if (command.userIdToDelete !== command.authenticatedUserId) {

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '@/src/prisma/prisma.service';
 import { TokenUpdateLog } from '@generated/prisma';
-import { ITokenUpdateLogRepository } from '../../token/domain/ports/token-update-log.repository.interface';
+import { ITokenUpdateLogRepository } from '@/src/token/domain/ports/token-update-log.repository.interface';
 
 @Injectable()
 export class PrismaTokenUpdateLogRepository implements ITokenUpdateLogRepository {

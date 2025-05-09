@@ -1,4 +1,4 @@
-import { AppConfig } from '../../config/app-config';
+import { AppConfig } from '@/src/config/app-config';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -19,7 +19,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: { userId: string; username: string; iat: number; exp: number }) {
-    // TODO: Maybe add a check to see if the user exists in the database
     return { id: payload.userId, username: payload.username };
   }
 }

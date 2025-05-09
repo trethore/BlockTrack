@@ -1,10 +1,10 @@
-import { AppConfig } from '../../config/app-config';
+import { AppConfig } from '@/src/config/app-config';
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthService } from './auth.service';
-import { JwtStrategy } from './jwt.strategy';
-import { IAuthService } from '../../user/domain/ports/auth.service.interface';
+import { AuthService } from '@/src/infrastructure/auth/auth.service';
+import { JwtStrategy } from '@/src/infrastructure/auth/jwt.strategy';
+import { IAuthService } from '@/src/user/domain/ports/auth.service.interface';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({

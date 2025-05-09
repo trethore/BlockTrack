@@ -1,7 +1,6 @@
 import { Injectable, Inject, ConflictException } from '@nestjs/common';
-import { IUserRepository } from '../domain/ports/user.repository.interface';
-import { IAuthService } from '../domain/ports/auth.service.interface';
-import { User } from '@generated/prisma'; // Garde User si tu en as besoin pour authService.generateToken
+import { IUserRepository } from '@/src/user/domain/ports/user.repository.interface';
+import { IAuthService } from '@/src/user/domain/ports/auth.service.interface';
 
 interface CreateUserCommand {
   email: string;
@@ -9,7 +8,6 @@ interface CreateUserCommand {
   password: string;
 }
 
-// Définit le type de retour attendu par le resolver
 interface CreateUserResult {
   accessToken: string;
 }
@@ -23,7 +21,7 @@ export class CreateUserUseCase {
     private readonly authService: IAuthService,
   ) { }
 
-  async execute(command: CreateUserCommand): Promise<CreateUserResult> { // MODIFIÉ ICI le type de retour
+  async execute(command: CreateUserCommand): Promise<CreateUserResult> {
     const existingUserByEmail = await this.userRepository.findByEmail(command.email);
     if (existingUserByEmail) {
       throw new ConflictException('Email already exists');
@@ -41,9 +39,8 @@ export class CreateUserUseCase {
       passwordHash,
     });
 
-    // Générer le token pour le nouvel utilisateur
     const accessToken = await this.authService.generateToken(newUser);
 
-    return { accessToken }; // RETOURNE AuthPayload
+    return { accessToken };
   }
 }

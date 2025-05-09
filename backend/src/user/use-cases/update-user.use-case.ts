@@ -1,6 +1,6 @@
 import { Injectable, Inject, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
-import { IUserRepository } from '../domain/ports/user.repository.interface';
-import { IAuthService } from '../domain/ports/auth.service.interface';
+import { IUserRepository } from '@/src/user/domain/ports/user.repository.interface';
+import { IAuthService } from '@/src/user/domain/ports/auth.service.interface';
 import { User } from '@generated/prisma';
 
 interface UpdateUserCommand {

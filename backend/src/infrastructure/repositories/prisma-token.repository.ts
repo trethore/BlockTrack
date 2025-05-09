@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ITokenRepository } from '../../token/domain/ports/token.repository.interface';
-import { PrismaService } from '../../prisma/prisma.service';
+import { ITokenRepository } from '@/src/token/domain/ports/token.repository.interface';
+import { PrismaService } from '@/src/prisma/prisma.service';
 import { Token, Prisma } from '@generated/prisma';
-import { MappedTokenData } from '../../token/domain/services/token-data.service';
+import { MappedTokenData } from '@/src/token/domain/services/token-data.service';
 
 @Injectable()
 export class PrismaTokenRepository implements ITokenRepository {

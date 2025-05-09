@@ -1,18 +1,17 @@
 import { Resolver, Query, Mutation, Args, ID, ResolveField, Parent } from '@nestjs/graphql';
 import { Inject, UseGuards } from '@nestjs/common';
-import { UserEntity } from './entities/user.entity';
-import { TokenEntity } from '../../../token/interface-adapters/graphql/entities/token.entity';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
-import { CreateUserUseCase } from '../../use-cases/create-user.use-case';
-import { GetUserUseCase } from '../../use-cases/get-user.use-case';
-import { UpdateUserUseCase } from '../../use-cases/update-user.use-case';
-import { DeleteUserUseCase } from '../../use-cases/delete-user.use-case';
-import { IFavoriteRepository } from '../../../token/domain/ports/favorite.repository.interface';
-import { JwtAuthGuard } from '../../../infrastructure/auth/jwt-auth.guard';
-import { CurrentUser } from '../../../infrastructure/auth/current-user.decorator';
-import { User } from '@generated/prisma';
-import { AuthPayload } from './entities/auth-payload.entity'; // Assure-toi que ce chemin est correct
+import { UserEntity } from '@/src/user/interface-adapters/graphql/entities/user.entity';
+import { TokenEntity } from '@/src/token/interface-adapters/graphql/entities/token.entity';
+import { CreateUserInput } from '@/src/user/interface-adapters/graphql/dto/create-user.input';
+import { UpdateUserInput } from '@/src/user/interface-adapters/graphql/dto/update-user.input';
+import { CreateUserUseCase } from '@/src/user/use-cases/create-user.use-case';
+import { GetUserUseCase } from '@/src/user/use-cases/get-user.use-case';
+import { UpdateUserUseCase } from '@/src/user/use-cases/update-user.use-case';
+import { DeleteUserUseCase } from '@/src/user/use-cases/delete-user.use-case';
+import { IFavoriteRepository } from '@/src/token/domain/ports/favorite.repository.interface';
+import { JwtAuthGuard } from '@/src/infrastructure/auth/jwt-auth.guard';
+import { CurrentUser } from '@/src/infrastructure/auth/current-user.decorator';
+import { AuthPayload } from '@/src/user/interface-adapters/graphql/entities/auth-payload.entity';
 
 @Resolver(() => UserEntity)
 export class UserResolver {
@@ -27,9 +26,9 @@ export class UserResolver {
   @Mutation(() => AuthPayload, { description: 'Creates a new user account and returns a JWT' })
   async createUser(
     @Args('createUserData') createUserData: CreateUserInput,
-  ): Promise<AuthPayload> { // MODIFIÉ ICI le type de retour
+  ): Promise<AuthPayload> {
     const result = await this.createUserUseCase.execute(createUserData);
-    return result; // result contient maintenant { accessToken: '...' }
+    return result;
   }
 
   @UseGuards(JwtAuthGuard)

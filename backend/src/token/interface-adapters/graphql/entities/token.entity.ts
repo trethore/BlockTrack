@@ -1,6 +1,6 @@
 import { ObjectType, Field, Int, Float, ID } from '@nestjs/graphql';
 import { GraphQLBigInt, GraphQLDateTime } from 'graphql-scalars';
-import { DataPointEntity } from './datapoint.entity';
+import { DataPointEntity } from '@/src/token/interface-adapters/graphql/entities/datapoint.entity';
 @ObjectType({ description: 'Represents a cryptocurrency token' })
 export class TokenEntity {
   @Field(() => ID)

@@ -1,6 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { GraphQLDateTime } from 'graphql-scalars';
-import { TokenEntity } from '../../../../token/interface-adapters/graphql/entities/token.entity'; // <<< Import TokenEntity
+import { TokenEntity } from '@/src/token/interface-adapters/graphql/entities/token.entity';
 
 @ObjectType({ description: 'Represents a user account' })
 export class UserEntity {

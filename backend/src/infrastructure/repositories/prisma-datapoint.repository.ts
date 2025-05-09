@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '@/src/prisma/prisma.service';
 import { DataPoint, Prisma } from '@generated/prisma';
-import { IDataPointRepository, CreateDataPointInput } from '../../token/domain/ports/datapoint.repository.interface';
+import { IDataPointRepository, CreateDataPointInput } from '@/src/token/domain/ports/datapoint.repository.interface';
 
 @Injectable()
 export class PrismaDataPointRepository implements IDataPointRepository {
@@ -60,6 +60,29 @@ export class PrismaDataPointRepository implements IDataPointRepository {
             });
         } catch (error) {
             this.logger.error(`Error finding data points for token ${tokenId}:`, error);
+            return [];
+        }
+    }
+
+    async findByTokenIds(tokenIds: string[]): Promise<DataPoint[]> {
+        if (!tokenIds || tokenIds.length === 0) {
+            return [];
+        }
+        this.logger.log(`Finding data points for token IDs: ${tokenIds.join(', ')}`);
+        try {
+            return await this.prisma.dataPoint.findMany({
+                where: {
+                    tokenId: {
+                        in: tokenIds,
+                    },
+                },
+                orderBy: [
+                    { tokenId: 'asc' },
+                    { date: 'asc' },
+                ],
+            });
+        } catch (error) {
+            this.logger.error(`Error finding data points for multiple tokens:`, error);
             return [];
         }
     }

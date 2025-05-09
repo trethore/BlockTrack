@@ -28,7 +28,6 @@ const TokenPriceChart: React.FC<TokenPriceChartProps> = ({ data, isLoading }) =>
     const chartData = data;
 
     if (!chartData || chartData.length === 0) {
-        // Display error message if no data is available
         return <div className="h-[300px] w-full border rounded-md flex items-center justify-center text-muted-foreground">Please refresh, the distance API is having issues</div>; // MODIFIED THIS LINE
     }
 

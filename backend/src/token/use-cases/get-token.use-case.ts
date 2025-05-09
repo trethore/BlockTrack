@@ -1,11 +1,11 @@
-import { AppConfig } from '../../config/app-config';
+import { AppConfig } from '@/src/config/app-config';
 import { Injectable, Inject, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ITokenRepository } from '../domain/ports/token.repository.interface';
-import { IDataPointRepository, CreateDataPointInput } from '../domain/ports/datapoint.repository.interface';
-import { TokenDataService } from '../domain/services/token-data.service';
+import { ITokenRepository } from '@/src/token/domain/ports/token.repository.interface';
+import { IDataPointRepository, CreateDataPointInput } from '@/src/token/domain/ports/datapoint.repository.interface';
+import { TokenDataService } from '@/src/token/domain/services/token-data.service';
 import { Token } from '@generated/prisma';
-import { ITokenUpdateLogRepository } from '../domain/ports/token-update-log.repository.interface';
+import { ITokenUpdateLogRepository } from '@/src/token/domain/ports/token-update-log.repository.interface';
 
 interface GetTokenQuery {
   id?: string;
@@ -22,14 +22,14 @@ export class GetTokenUseCase {
     private readonly tokenDataService: TokenDataService,
     @Inject(ITokenUpdateLogRepository)
     private readonly tokenUpdateLogRepository: ITokenUpdateLogRepository,
-    private readonly configService: ConfigService, // +++
+    private readonly configService: ConfigService,
   ) { }
 
-  private get DATA_POINTS_REFRESH_INTERVAL_MS(): number { // +++
+  private get DATA_POINTS_REFRESH_INTERVAL_MS(): number {
     return this.configService.get<AppConfig>('app')?.refreshIntervals?.dataPoints ?? 1 * 60 * 60 * 1000;
   }
 
-  private get ALL_TOKENS_REFRESH_INTERVAL_MS(): number { // +++
+  private get ALL_TOKENS_REFRESH_INTERVAL_MS(): number {
     return this.configService.get<AppConfig>('app')?.refreshIntervals?.allTokens ?? 1 * 60 * 60 * 1000;
   }
 
@@ -136,7 +136,7 @@ export class GetTokenUseCase {
         const deletedCount = await this.dataPointRepository.deleteAllDataPointsByTokenId(token.id);
         this.logger.log(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Deleted ${deletedCount} old data points.`);
         this.logger.log(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Fetching comprehensive historical data for CoinGecko ID '${coinGeckoId}'...`);
-        const mappedPoints = await this.tokenDataService.fetchComprehensiveHistoricalData(coinGeckoId); // MODIFIÉ ICI
+        const mappedPoints = await this.tokenDataService.fetchComprehensiveHistoricalData(coinGeckoId);
 
         if (mappedPoints.length > 0) {
           const newDataPoints: CreateDataPointInput[] = mappedPoints.map(point => ({
@@ -151,16 +151,14 @@ export class GetTokenUseCase {
           this.logger.warn(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: No new data points fetched or prepared for insertion after comprehensive fetch. Last data points update timestamp will NOT be updated.`); // ADDED LOG MESSAGE
         }
 
-        // Only update the timestamp if data points were successfully fetched and inserted
-        if (mappedPoints.length > 0) { // ADDED THIS CHECK
+        if (mappedPoints.length > 0) {
           await this.tokenRepository.update(token.id, { lastDataPointsUpdate: now });
         }
 
 
-        this.logger.log(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Data points refresh process finished.`); // Adjusted log message
+        this.logger.log(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Data points refresh process finished.`);
       } catch (error) {
         this.logger.error(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Failed during data points refresh process:`, error);
-        // The timestamp is not updated in case of error, which is the desired behavior.
       }
     } else {
       this.logger.log(`[GetTokenUseCase - DataPointsRefresh] Token ${token.symbol}: Data points are recent enough. Skipping refresh.`);

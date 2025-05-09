@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { IFavoriteRepository } from '../../token/domain/ports/favorite.repository.interface';
-import { PrismaService } from '../../prisma/prisma.service';
+import { IFavoriteRepository } from '@/src/token/domain/ports/favorite.repository.interface';
+import { PrismaService } from '@/src/prisma/prisma.service';
 import { Token, Favorite } from '@generated/prisma';
 import { Prisma } from '@generated/prisma';
 

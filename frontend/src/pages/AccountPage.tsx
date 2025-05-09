@@ -1,120 +1,102 @@
 import React, { useState, useEffect } from 'react';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useQuery, useLazyQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
-import { GET_ME, IS_TOKEN_VALID } from '@lib/apollo/queries.ts';
+import { GET_ME, IS_TOKEN_VALID } from '@/lib/apollo/queries.ts'; // Assuming queries are here
 import LoginForm from '@/components/auth/LoginForm.tsx';
 import RegisterForm from '@/components/auth/RegisterForm.tsx';
 import UserProfile from '@/components/auth/UserProfile.tsx';
-import { Button } from '@/components/ui/button.tsx';
-import { Loader2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { Loader2 } from 'lucide-react'; // Assuming lucide-react is installed
 
-const ACCESS_TOKEN_KEY = 'AccessToken';
+import { User } from '../types/user.ts';
 
-interface User {
-    id: string;
-    username: string;
-    email: string;
-    createdAt: string;
-    updatedAt: string;
-}
+const ACCESS_TOKEN_KEY = 'accessToken';
 
 const AccountPage: React.FC = () => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
-    const [isAuthLoading, setIsAuthLoading] = useState(true);
-    const [authError, setAuthError] = useState<string | null>(null);
+    const [authStatus, setAuthStatus] = useState<'loading' | 'authenticated' | 'unauthenticated' | 'error'>('loading');
+    const [authErrorMessage, setAuthErrorMessage] = useState<string | null>(null);
     const [showLogin, setShowLogin] = useState(true);
     const navigate = useNavigate();
+
+    const handleAuthError = (message: string, error?: any) => {
+        if (error) console.error("Authentication process error:", error);
+        localStorage.removeItem(ACCESS_TOKEN_KEY);
+        setCurrentUser(null);
+        setAuthStatus('error');
+        setAuthErrorMessage(message);
+    };
 
     const { refetch: checkTokenValidity } = useQuery(IS_TOKEN_VALID, {
         skip: true,
         fetchPolicy: 'network-only',
-        onError: (error) => {
-            console.error("Token validation error:", error);
-            localStorage.removeItem(ACCESS_TOKEN_KEY);
-            setCurrentUser(null);
-            setIsAuthLoading(false);
-            setAuthError('Session expired or invalid. Please log in again.');
-        },
+        onError: (error) => handleAuthError('Session expired or invalid. Please log in again.', error),
         onCompleted: (data) => {
             if (data && data.isTokenValid) {
-                fetchMe();
+                fetchMe(); // Déclenchera le fetch des données utilisateur
             } else {
-                localStorage.removeItem(ACCESS_TOKEN_KEY);
-                setCurrentUser(null);
-                setIsAuthLoading(false);
+                handleAuthError('Session token is no longer valid. Please log in.');
             }
         }
     });
 
-    const [fetchMe, { loading: loadingMe, error: errorMe }] = useLazyQuery<{ me: User }>(GET_ME, {
+    const [fetchMe, { loading: loadingMe }] = useLazyQuery<{ me: User }>(GET_ME, { // loadingMe est géré par authStatus
         fetchPolicy: 'network-only',
         onCompleted: (data) => {
             if (data && data.me) {
                 setCurrentUser(data.me);
-                setAuthError(null);
+                setAuthStatus('authenticated');
+                setAuthErrorMessage(null);
             } else {
-                localStorage.removeItem(ACCESS_TOKEN_KEY);
-                setCurrentUser(null);
-                setAuthError('Failed to retrieve user data. Please log in again.');
+                handleAuthError('Failed to retrieve user data. Please log in again.');
             }
-            setIsAuthLoading(false);
         },
         onError: (apolloError) => {
-            console.error("Error fetching user data:", apolloError);
-            localStorage.removeItem(ACCESS_TOKEN_KEY);
-            setCurrentUser(null);
-            if (apolloError.networkError || (apolloError.graphQLErrors && apolloError.graphQLErrors.some(e => (e.extensions?.code as string)?.includes('UNAUTHENTICATED') || e.message.toLowerCase().includes('unauthorized')))) {
-                setAuthError('Your session has expired or is invalid. Please log in.');
-            } else if (apolloError.graphQLErrors && apolloError.graphQLErrors.some(e => (e.extensions?.originalError as any)?.statusCode === 403)) {
-                setAuthError('Access Forbidden (403). You do not have permission to access this resource or your token is invalid.');
+            let message = 'An error occurred while fetching your profile. Please try again.';
+            if (apolloError.networkError || apolloError.graphQLErrors?.some(e => (e.extensions?.code as string)?.includes('UNAUTHENTICATED') || e.message.toLowerCase().includes('unauthorized'))) {
+                message = 'Your session has expired or is invalid. Please log in.';
+            } else if (apolloError.graphQLErrors?.some(e => (e.extensions?.originalError as any)?.statusCode === 403)) {
+                message = 'Access Forbidden (403). You do not have permission to access this resource or your token is invalid.';
             }
-            else {
-                setAuthError('An error occurred while fetching your profile. Please try again.');
-            }
-            setIsAuthLoading(false);
+            handleAuthError(message, apolloError);
         },
     });
 
     useEffect(() => {
         const token = localStorage.getItem(ACCESS_TOKEN_KEY);
         if (token) {
+            setAuthStatus('loading'); // Indique qu'on vérifie le token
             checkTokenValidity();
         } else {
+            setAuthStatus('unauthenticated');
             setCurrentUser(null);
-            setIsAuthLoading(false);
         }
-    }, [checkTokenValidity, fetchMe]);
+    }, [checkTokenValidity]); // fetchMe n'est pas une dépendance ici car il est appelé conditionnellement
 
     const handleLoginSuccess = (token: string) => {
         localStorage.setItem(ACCESS_TOKEN_KEY, token);
-        setIsAuthLoading(true);
+        setAuthStatus('loading'); // On va re-fetch 'me'
         fetchMe();
     };
 
-    const handleRegisterSuccess = (token: string) => {
+    const handleRegisterSuccess = (token: string) => { // Similaire à login
         localStorage.setItem(ACCESS_TOKEN_KEY, token);
-        setIsAuthLoading(true);
+        setAuthStatus('loading');
         fetchMe();
     };
 
-    const handleAccountDeleted = () => {
+    const handleAccountAction = (isLogout: boolean = false) => {
         localStorage.removeItem(ACCESS_TOKEN_KEY);
         setCurrentUser(null);
+        setAuthStatus('unauthenticated');
         setShowLogin(true);
-        setAuthError(null);
-        navigate('/');
+        setAuthErrorMessage(null);
+        if (!isLogout) navigate('/'); // Redirige vers la landing page après suppression
+        else navigate('/account'); // Reste sur la page de compte pour se reconnecter
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem(ACCESS_TOKEN_KEY);
-        setCurrentUser(null);
-        setShowLogin(true);
-        navigate('/account');
-        setAuthError(null);
-    };
-
-    if (isAuthLoading || loadingMe) {
+    if (authStatus === 'loading') {
         return (
             <div className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)] text-center p-4">
                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -123,31 +105,30 @@ const AccountPage: React.FC = () => {
         );
     }
 
-    if (authError && !currentUser) {
+    if (authStatus === 'error') {
         return (
             <div className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)] text-center p-4">
                 <Alert variant="destructive" className="max-w-md">
                     <AlertTitle>Authentication Error</AlertTitle>
-                    <AlertDescription>{authError}</AlertDescription>
+                    <AlertDescription>{authErrorMessage || 'An unknown error occurred.'}</AlertDescription>
                 </Alert>
-                <Button onClick={() => { setAuthError(null); setIsAuthLoading(false); setShowLogin(true); }} className="mt-4">
-                    Try to login again
+                <Button onClick={() => { setAuthStatus('unauthenticated'); setAuthErrorMessage(null); setShowLogin(true); }} className="mt-4">
+                    Go to Login
                 </Button>
             </div>
         );
     }
 
-
     return (
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)] py-8 px-4">
-            {currentUser ? (
+            {authStatus === 'authenticated' && currentUser ? (
                 <UserProfile
                     user={currentUser}
-                    onLogout={handleLogout}
-                    onAccountDeleted={handleAccountDeleted}
-                    refetchUserData={fetchMe}
+                    onLogout={() => handleAccountAction(true)}
+                    onAccountDeleted={() => handleAccountAction(false)}
+                    refetchUserData={fetchMe} // fetchMe est stable, pas besoin de useCallback
                 />
-            ) : (
+            ) : ( // 'unauthenticated'
                 showLogin ? (
                     <LoginForm onLoginSuccess={handleLoginSuccess} switchToRegister={() => setShowLogin(false)} />
                 ) : (

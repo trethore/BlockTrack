@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Input } from '@/components/ui/input.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group.tsx';
@@ -10,6 +10,7 @@ import {
     SortDirection,
     CHART_TIMEFRAMES,
 } from '@/types/token.ts';
+import { debounce } from 'lodash';
 
 interface LeaderboardControlsProps {
     title?: string;
@@ -49,6 +50,31 @@ const LeaderboardControls: React.FC<LeaderboardControlsProps> = ({
     onRefresh,
     isRefreshing
 }) => {
+    const [inputValue, setInputValue] = useState(searchTerm);
+    const debouncedSearch = useCallback(
+        debounce((newSearchTerm: string) => {
+            onSearchChange(newSearchTerm);
+        }, 300),
+        [onSearchChange]
+    );
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newInputValue = e.target.value;
+        setInputValue(newInputValue);
+        debouncedSearch(newInputValue);
+    };
+
+    const clearSearch = () => {
+        setInputValue('');
+        onSearchChange('');
+        debouncedSearch.cancel();
+    };
+
+    useEffect(() => {
+        setInputValue(searchTerm);
+    }, [searchTerm]);
+
+
     const handleSortKeySelect = (value: string) => {
         const newSortKey = value as SortableTokenKey;
         onSortKeyChange(newSortKey);
@@ -56,7 +82,7 @@ const LeaderboardControls: React.FC<LeaderboardControlsProps> = ({
         if (newSortKey.startsWith('percentChange')) {
             let period: ChartTimeframe | null = null;
             if (newSortKey === 'percentChange1h') period = '1h';
-            else if (newSortKey === 'percentChange24h') period = '1d'; // Map 24h to 1d
+            else if (newSortKey === 'percentChange24h') period = '1d';
             else if (newSortKey === 'percentChange7d') period = '7d';
             else if (newSortKey === 'percentChange30d') period = '30d';
             else if (newSortKey === 'percentChange1y') period = '1y';
@@ -76,16 +102,16 @@ const LeaderboardControls: React.FC<LeaderboardControlsProps> = ({
                 <Input
                     type="search"
                     placeholder="Search token by name or symbol..."
-                    value={searchTerm}
-                    onChange={(e) => onSearchChange(e.target.value)}
+                    value={inputValue}
+                    onChange={handleInputChange}
                     className="w-full pr-10"
                 />
-                {searchTerm && (
+                {inputValue && (
                     <Button
                         variant="ghost"
                         size="icon"
                         className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7 text-red-500 hover:text-red-700"
-                        onClick={() => onSearchChange('')}
+                        onClick={clearSearch}
                         aria-label="Clear search"
                     >
                         <XIcon className="h-4 w-4" />
@@ -121,7 +147,6 @@ const LeaderboardControls: React.FC<LeaderboardControlsProps> = ({
                 </div>
 
                 <div className="flex items-center gap-2">
-                    {/* Refresh Button */}
                     {onRefresh && (
                         <Button
                             variant="outline"
@@ -133,7 +158,6 @@ const LeaderboardControls: React.FC<LeaderboardControlsProps> = ({
                             <RefreshCcw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                         </Button>
                     )}
-                    {/* Period Toggle */}
                     <span className="text-sm text-muted-foreground hidden sm:inline">Period:</span>
                     <ToggleGroup
                         type="single"

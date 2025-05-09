@@ -13,6 +13,8 @@ import { toast } from 'sonner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
 import { Button } from '@/components/ui/button.tsx';
 
+import { parseBigInt, sortTokens } from '@/lib/utils.js';
+
 const ACCESS_TOKEN_KEY = 'AccessToken';
 const DEFAULT_FAV_SORT_KEY: SortableTokenKey = 'marketCapUsd';
 
@@ -144,30 +146,7 @@ const FavoritesPage: React.FC = () => {
             );
         }
 
-        processedTokens.sort((a, b) => {
-            let valA_raw = a[sortConfig.key as keyof TokenLeaderboardData];
-            let valB_raw = b[sortConfig.key as keyof TokenLeaderboardData];
-
-            const valA = typeof valA_raw === 'bigint' ? Number(valA_raw) : valA_raw;
-            const valB = typeof valB_raw === 'bigint' ? Number(valB_raw) : valB_raw;
-
-            const aIsNull = valA === null || valA === undefined;
-            const bIsNull = valB === null || valB === undefined;
-
-            if (aIsNull && bIsNull) return 0;
-            if (aIsNull) return 1;
-            if (bIsNull) return -1;
-
-            let comparison = 0;
-            if (typeof valA === 'number' && typeof valB === 'number') {
-                comparison = valA - valB;
-            } else if (typeof valA === 'string' && typeof valB === 'string') {
-                comparison = valA.localeCompare(valB, undefined, { sensitivity: 'base' });
-            }
-            return sortConfig.direction === 'asc' ? comparison : -comparison;
-        });
-
-        return processedTokens;
+        return sortTokens(processedTokens, sortConfig);
     }, [displayedFavoriteTokens, searchTerm, sortConfig]);
 
     const overallLoading = (userLoading && !userData) || (tokensLoading && (!allTokens || allTokens.length === 0));

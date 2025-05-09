@@ -4,13 +4,13 @@ import { TokenEntity } from '../entities/token.entity';
 import { GetAllTokensUseCase } from '../../../use-cases/get-all-tokens.use-case';
 import { GetTokenUseCase } from '../../../use-cases/get-token.use-case';
 import { GetTokenInput } from '../dto/get-token.input';
-import { JwtAuthGuard } from '../../../../infrastructure/auth/jwt-auth.guard';
-import { CurrentUser } from '../../../../infrastructure/auth/current-user.decorator';
+import { JwtAuthGuard } from '@/src/infrastructure/auth/jwt-auth.guard';
+import { CurrentUser } from '@/src/infrastructure/auth/current-user.decorator';
 import { AddFavoriteTokenUseCase } from '../../../use-cases/add-favorite-token.use-case';
 import { RemoveFavoriteTokenUseCase } from '../../../use-cases/remove-favorite-token.use-case';
 import { FavoriteTokenInput } from '../dto/favorite-token.input';
 import { DataPointEntity } from '../entities/datapoint.entity';
-import { IDataPointRepository } from '../../../domain/ports/datapoint.repository.interface';
+import { DataPointLoader } from '../../../infrastructure/graphql/dataloaders/datapoint.loader';
 
 @Resolver(() => TokenEntity)
 export class TokenResolver {
@@ -19,8 +19,7 @@ export class TokenResolver {
     private readonly getTokenUseCase: GetTokenUseCase,
     private readonly addFavoriteTokenUseCase: AddFavoriteTokenUseCase,
     private readonly removeFavoriteTokenUseCase: RemoveFavoriteTokenUseCase,
-    @Inject(IDataPointRepository)
-    private readonly dataPointRepository: IDataPointRepository,
+    private readonly dataPointLoader: DataPointLoader,
   ) { }
 
   @Query(() => [TokenEntity], {
@@ -65,9 +64,10 @@ export class TokenResolver {
   }
 
   @ResolveField(() => [DataPointEntity], {
-    nullable: true
+    nullable: true,
+    description: 'Historical data points for the token.',
   })
   async dataPoints(@Parent() token: TokenEntity): Promise<DataPointEntity[]> {
-    return this.dataPointRepository.findByTokenId(token.id);
+    return this.dataPointLoader.load(token.id);
   }
 }

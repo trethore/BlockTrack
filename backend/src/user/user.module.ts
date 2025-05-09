@@ -1,16 +1,16 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { UserResolver } from './interface-adapters/graphql/user.resolver';
-import { AuthResolver } from './interface-adapters/graphql/auth.resolver';
-import { PrismaModule } from '../prisma/prisma.module';
-import { IUserRepository } from './domain/ports/user.repository.interface';
-import { PrismaUserRepository } from '../infrastructure/repositories/prisma-user.repository';
-import { CreateUserUseCase } from './use-cases/create-user.use-case';
-import { LoginUserUseCase } from './use-cases/login-user.use-case';
-import { GetUserUseCase } from './use-cases/get-user.use-case';
-import { UpdateUserUseCase } from './use-cases/update-user.use-case';
-import { DeleteUserUseCase } from './use-cases/delete-user.use-case';
-import { AuthModule } from '../infrastructure/auth/auth.module';
-import { TokenModule } from '../token/token.module';
+import { UserResolver } from '@/src/user/interface-adapters/graphql/user.resolver';
+import { AuthResolver } from '@/src/user/interface-adapters/graphql/auth.resolver';
+import { PrismaModule } from '@/src/prisma/prisma.module';
+import { IUserRepository } from '@/src/user/domain/ports/user.repository.interface';
+import { PrismaUserRepository } from '@/src/infrastructure/repositories/prisma-user.repository';
+import { CreateUserUseCase } from '@/src/user/use-cases/create-user.use-case';
+import { LoginUserUseCase } from '@/src/user/use-cases/login-user.use-case';
+import { GetUserUseCase } from '@/src/user/use-cases/get-user.use-case';
+import { UpdateUserUseCase } from '@/src/user/use-cases/update-user.use-case';
+import { DeleteUserUseCase } from '@/src/user/use-cases/delete-user.use-case';
+import { AuthModule } from '@/src/infrastructure/auth/auth.module';
+import { TokenModule } from '@/src/token/token.module';
 
 @Module({
   imports: [PrismaModule, AuthModule, forwardRef(() => TokenModule)],

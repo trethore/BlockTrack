@@ -1,8 +1,8 @@
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
-import { LoginInput } from './dto/login.input';
-import { AuthPayload } from './entities/auth-payload.entity';
-import { LoginUserUseCase } from '../../use-cases/login-user.use-case';
+import { LoginInput } from '@/src/user/interface-adapters/graphql/dto/login.input';
+import { AuthPayload } from '@/src/user/interface-adapters/graphql/entities/auth-payload.entity';
+import { LoginUserUseCase } from '@/src/user/use-cases/login-user.use-case';
 import { JwtAuthGuard } from '../../../infrastructure/auth/jwt-auth.guard';
 
 @Resolver()

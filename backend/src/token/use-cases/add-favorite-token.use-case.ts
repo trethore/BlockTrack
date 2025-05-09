@@ -1,7 +1,7 @@
 import { Injectable, Inject, NotFoundException, ConflictException, ForbiddenException } from '@nestjs/common';
-import { IFavoriteRepository } from '../domain/ports/favorite.repository.interface';
-import { ITokenRepository } from '../domain/ports/token.repository.interface';
-import { IUserRepository } from '../../user/domain/ports/user.repository.interface';
+import { IFavoriteRepository } from '@/src/token/domain/ports/favorite.repository.interface';
+import { ITokenRepository } from '@/src/token/domain/ports/token.repository.interface';
+import { IUserRepository } from '@/src/user/domain/ports/user.repository.interface';
 import { Token } from '@generated/prisma';
 
 interface AddFavoriteTokenCommand {

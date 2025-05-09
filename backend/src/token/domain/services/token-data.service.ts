@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { ConfigService } from '@nestjs/config';
+
 interface CoinGeckoMarketData {
     id: string; symbol: string; name: string; image: string; current_price: number; market_cap: number | null; market_cap_rank: number | null; fully_diluted_valuation: number | null; total_volume: number | null; high_24h: number | null; low_24h: number | null; price_change_24h: number | null; price_change_percentage_24h: number | null; market_cap_change_24h: number | null; market_cap_change_percentage_24h: number | null; circulating_supply: number | null; total_supply: number | null; max_supply: number | null; ath: number | null; ath_change_percentage: number | null; ath_date: string | null; atl: number | null; atl_change_percentage: number | null; atl_date: string | null; roi: any | null; last_updated: string | null; price_change_percentage_1h_in_currency?: number | null; price_change_percentage_7d_in_currency?: number | null; price_change_percentage_30d_in_currency?: number | null; price_change_percentage_1y_in_currency?: number | null;
 }
@@ -80,11 +80,9 @@ export class TokenDataService {
     private async fetchSingleRangeHistoricalData(
         coinGeckoId: string,
         days: number,
-        interval?: string, // Optionnel, pour information dans les logs
+        interval?: string,
     ): Promise<MappedDataPoint[]> {
         const vs_currency = 'usd';
-        // L'API CoinGecko ajuste l'intervalle automatiquement basé sur 'days'.
-        // Le paramètre 'interval' ici est surtout pour la clarté des logs.
         const url = `${this.coinGeckoApiBase}/coins/${coinGeckoId}/market_chart?vs_currency=${vs_currency}&days=${days}`;
 
         this.logger.log(`Fetching historical data for ${coinGeckoId}: ${days} days (expected interval: ${interval || 'auto'}) from ${url}`);
@@ -98,7 +96,7 @@ export class TokenDataService {
 
             if (response?.status !== 200 || !Array.isArray(response?.data?.prices)) {
                 this.logger.error(`Failed fetching historical data for ${coinGeckoId} (${days} days). Status: ${response?.status}, Data: ${JSON.stringify(response?.data)}`);
-                return []; // Retourner un tableau vide en cas d'erreur pour ne pas bloquer les autres appels
+                return [];
             }
 
             if (response.data.prices.length === 0) {
@@ -122,19 +120,17 @@ export class TokenDataService {
         } catch (error) {
             const errorMessage = error?.response?.data || error?.message || error;
             this.logger.error(`Error fetching/processing CoinGecko historical data for ${coinGeckoId} (${days} days):`, errorMessage);
-            return []; // Important: retourner un tableau vide pour permettre aux autres promesses de se résoudre
+            return [];
         }
     }
 
     async fetchComprehensiveHistoricalData(coinGeckoId: string): Promise<MappedDataPoint[]> {
         this.logger.log(`Fetching comprehensive historical data for ${coinGeckoId}`);
 
-        // Définir les plages de jours pour les différentes granularités
-        // CoinGecko: 1 jour = 5min, 2-90 jours = horaire, >90 jours = journalier
         const ranges = [
-            { days: 1, intervalLabel: '5-minutely' }, // Pour les dernières 24h
-            { days: 90, intervalLabel: 'hourly' },    // Pour les 90 derniers jours (inclut les 24h précédentes)
-            { days: 365, intervalLabel: 'daily' },   // Pour la dernière année (inclut les 90j précédents)
+            { days: 1, intervalLabel: '5-minutely' },
+            { days: 90, intervalLabel: 'hourly' },
+            { days: 365, intervalLabel: 'daily' },
         ];
 
         const promises = ranges.map(range =>
@@ -145,36 +141,23 @@ export class TokenDataService {
         const [data1Day, data90Days, data365Days] = results;
 
         this.logger.log(`Fetched granularities: 1-day (${data1Day.length}), 90-days (${data90Days.length}), 365-days (${data365Days.length}) for ${coinGeckoId}`);
-
-        // Fusionner et dédoublonner les points de données, en privilégiant la granularité la plus fine.
-        // Une Map est utilisée pour s'assurer que chaque timestamp est unique.
-        // L'ordre d'insertion est important: les données les plus granulaires (1 jour) sont ajoutées en premier.
         const mergedDataPointsMap = new Map<number, MappedDataPoint>();
 
         const addPointsToMap = (points: MappedDataPoint[]) => {
             for (const point of points) {
                 const timestamp = point.date.getTime();
-                // Si le timestamp n'existe pas encore, ou pour donner priorité aux données plus récentes/granulaires
-                // (si on s'attend à ce que CoinGecko puisse renvoyer des points légèrement différents pour le même timestamp à différentes granularités,
-                // la stratégie actuelle "premier arrivé, premier servi" pour une granularité donnée est OK si on ajoute les plus fins d'abord)
                 if (!mergedDataPointsMap.has(timestamp)) {
                     mergedDataPointsMap.set(timestamp, point);
                 }
             }
         };
 
-        // Ordre de priorité pour la fusion : 5-min, puis horaire, puis quotidien
-        // Les données de 'data1Day' sont les plus précises pour le dernier jour
         addPointsToMap(data1Day);
-        // Ensuite, ajoutez les points horaires des 90 derniers jours qui ne sont pas déjà couverts par les données 5-min
         addPointsToMap(data90Days);
-        // Enfin, ajoutez les points quotidiens de la dernière année qui ne sont pas déjà couverts
         addPointsToMap(data365Days);
-
 
         const finalDataPoints = Array.from(mergedDataPointsMap.values());
 
-        // Trier par date au cas où l'ordre aurait été perdu
         finalDataPoints.sort((a, b) => a.date.getTime() - b.date.getTime());
 
         this.logger.log(`Merged and de-duplicated data for ${coinGeckoId}. Total points: ${finalDataPoints.length}`);
