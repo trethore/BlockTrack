@@ -243,11 +243,10 @@ Please ensure your code adheres to the existing coding style and passes linting 
 
 ## 📝 License
 
-This project is licensed under the **MIT License**. See the [LICENSE.md](LICENSE.md) file for more details (assuming a LICENSE.md file would be created, or link to `https://opensource.org/licenses/MIT`).
-
+This project is licensed under the **MIT License**. 
+ [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ## 🙏 Acknowledgements
 
 *   Token data and market information are powered by the [CoinGecko API](https://www.coingecko.com/en/api).
 *   UI components are inspired by [Shadcn/ui](https://ui.shadcn.com/).
 *   Built with the excellent NestJS and React ecosystems.
-*   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
